@@ -23,28 +23,87 @@ Vous avez été désigné comme étant administrateur système junior dans une p
         [sudo] password for utilisateur:
         utilisateur@cyberini1:~$ ll ~/ma_mission.txt
         -rw-r--r-- 1 root root 17 Feb 17 14:03 /home/utilisateur/ma_mission.txt
-    ```
-- Donnez les droits de lecture, d'écriture et d'exécution à ce fichier pour l'utilisateur root. 
+- Donnez les droits de lecture, d'écriture et d'exécution à ce fichier pour l'utilisateur root.
+    - ```
+        utilisateur@cyberini1:~$ sudo chmod u+rwx ~/ma_mission.txt
+        utilisateur@cyberini1:~$ ll ~/ma_mission.txt
+        -rwxr--r-- 1 root root 17 Feb 17 14:03 /home/utilisateur/ma_mission.txt*
+        ```
 - Retirez tous les autres droits aux autres membres et au groupe.
+   - ```
+        utilisateur@cyberini1:~$ sudo chmod go-rwx ~/ma_mission.txt
+        utilisateur@cyberini1:~$ ll ~/ma_mission.txt
+        -rwx------ 1 root root 17 Feb 17 14:03 /home/utilisateur/ma_mission.txt*
+        utilisateur@cyberini1:~$
+        ```
 - Créez un script shell qui dit "Bonjour" et exécutez-le.
+   - ```
+        utilisateur@cyberini1:~$ vim mon_script.sh
+        utilisateur@cyberini1:~$ chmod +x mon_script.sh
+        utilisateur@cyberini1:~$ ./mon_script.sh
+        Bonjour!
+        utilisateur@cyberini1:~$ cat mon_script.sh
+        #!/bin/sh
+        echo "Bonjour!"
+        ```
 
 ### Gestion des Processus : 
 
-- Récupérez le load average des 15 dernières minutes. 
-- Ouvrez l'éditeur de texte "nano" en arrière plan. 
-- Trouvez l'identifiant de processus (PID) de "nano". 
+- Récupérez le load average des 15 dernières minutes.
+   - ```
+        uptime
+        awk '{print $NF}' /proc/loadavg
+        ```
+- Ouvrez l'éditeur de texte "nano" en arrière plan.
+   - ```
+        nano &
+        ```
+- Trouvez l'identifiant de processus (PID) de "nano".
+   - ```
+        ps aux | grep nano
+        ```  
 - Eliminez le processus nano avec la commande "kill" (trouvez la bonne option).
+   - ```
+        kill $(pgrep nano)
+        kill -9 $(pgrep nano)
+        ```
+  
 
 ### Gestion Réseau : 
 
-- Trouvez le fichier "resolv.conf". 
-- Trouvez l'adresse IP du serveur DNS ("nameserver"). 
-- Trouvez l'adresse IP du site cyberini.com. 
+- Trouvez le fichier "resolv.conf".
+   - ```
+        sudo find / -iname resolv.conf 2>/dev/null
+        ```    
+- Trouvez l'adresse IP du serveur DNS ("nameserver").
+   - ```
+        cat /etc/resolv.conf | grep nameserver
+        ```   
+- Trouvez l'adresse IP du site cyberini.com.
+   - ```
+        nslookup cyberini.com
+        ```   
 - Récupérez le code source de example.net.
+   - ```
+        curl -s https://example.net
+        ```   
 
 ### Gestion Système : 
 
 - Mettez à jour la liste des paquets et vérifiez que "nano" soit à jour.
-- Trouvez combien de pourcentage d'espace libre il reste sur le disque. 
-- Trouvez la version du noyau Linux. 
+     - ```
+        sudo apt update
+        ```   
+- Trouvez combien de pourcentage d'espace libre il reste sur le disque.
+     - ```
+        df -h
+        df -h / | awk 'NR==2 {print $5}'
+        ```   
+- Trouvez la version du noyau Linux.
+     - ```
+        uname -r
+        ```   
 - Récupérez la valeur de la variable PATH.
+     - ```
+        echo $PATH
+        ```   
