@@ -6,14 +6,24 @@ Vous avez été désigné comme étant administrateur système junior dans une p
 ## Liste des tâches :
 ### Gestion des Fichiers et Dossiers : 
 
-- Créez un répertoire appelé "documents_entreprise" dans le répertoire /root. 
-- Dans ce dossier "documents_entreprise", créez deux sous-répertoires, l'un appelé "rapports" et l'autre "factures". 
-- Créez un fichier texte appelé "ma_mission.txt" dans le répertoire personnel de l'utilisateur "utilisateur".
+- Créez un répertoire appelé "documents_entreprise" dans le répertoire /root.
+    - `sudo mkdir /root/documents_entreprise`
+- Dans ce dossier "documents_entreprise", créez deux sous-répertoires, l'un appelé "rapports" et l'autre "factures".
+    - `sudo mkdir /root/documents_entreprise/rapports /root/documents_entreprise/factures`
+- Créez un fichier texte appelé "" dans le répertoire personnel de l'utilisateur "utilisateur".
+    - `touch ~/ma_mission.txt`
 - Donnez-lui du texte comme "voici ma mission" (ou copiez/collez cet exercice dedans).
+    - `echo "voici ma mission" > ~/ma_mission.txt`
 
 ### Gestion des Permissions: 
 
-- Assurez vous que seul l'utilisateur "root" soit propriétaire du fichier "ma_mission.txt". 
+- Assurez vous que seul l'utilisateur "root" soit propriétaire du fichier "ma_mission.txt".
+    - ```
+        utilisateur@cyberini1:~$ sudo chown root: ~/ma_mission.txt
+        [sudo] password for utilisateur:
+        utilisateur@cyberini1:~$ ll ~/ma_mission.txt
+        -rw-r--r-- 1 root root 17 Feb 17 14:03 /home/utilisateur/ma_mission.txt
+    ```
 - Donnez les droits de lecture, d'écriture et d'exécution à ce fichier pour l'utilisateur root. 
 - Retirez tous les autres droits aux autres membres et au groupe.
 - Créez un script shell qui dit "Bonjour" et exécutez-le.
