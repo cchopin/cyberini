@@ -1,0 +1,157 @@
+Reconnaissance passive (informations générales sur la cible)
+
+-- ip privée, phase ignorée
+
+Scan réseau et découverte des services (détection des ports ouverts et des services)
+
+[Mar 11, 2025 - 13:18:46 (CET)] exegol-cyberini /workspace #  sudo nmap -sV -sC -p- ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com
+Starting Nmap 7.93 ( https://nmap.org ) at 2025-03-11 13:19 CET
+Nmap scan report for ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com (172.67.164.21)
+Host is up (0.00061s latency).
+Other addresses for ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com (not scanned): 104.21.57.138 2606:4700:3031::ac43:a415 2606:4700:3037::6815:398a
+Not shown: 65532 filtered tcp ports (no-response)
+PORT     STATE SERVICE    VERSION
+80/tcp   open  tcpwrapped
+443/tcp  open  tcpwrapped
+8080/tcp open  tcpwrapped
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 153.47 seconds
+
+
+[Mar 11, 2025 - 13:21:12 (CET)] exegol-cyberini /workspace # nmap -O ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com
+Starting Nmap 7.93 ( https://nmap.org ) at 2025-03-11 13:21 CET
+Nmap scan report for ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com (172.67.164.21)
+Host is up (0.0030s latency).
+Other addresses for ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com (not scanned): 104.21.57.138 2606:4700:3031::ac43:a415 2606:4700:3037::6815:398a
+All 1000 scanned ports on ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com (172.67.164.21) are in ignored states.
+Not shown: 1000 filtered tcp ports (no-response)
+Too many fingerprints match this host to give specific OS details
+
+OS detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 6.47 seconds
+
+
+[Mar 11, 2025 - 13:20:58 (CET)] exegol-cyberini /workspace # curl -I http://ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com
+HTTP/1.1 200 OK
+Date: Tue, 11 Mar 2025 12:24:50 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: keep-alive
+cf-cache-status: DYNAMIC
+Report-To: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=%2BKXjFy37ckf7giWx5STrO03YyIBnQZxZwWMTftwh8X3R7%2BKT9oAAPI6Bi7FxpkiapmiXLZISufMU3L%2BbuvsbzmuHAnnMCYQOzUZw3ERxkU7RKJ0zBdBX%2FkshF2FOkPvUZUMgWqDrgcNIAbljgLVrdPXKc0bSVGPBJM9Xmi9dArE5TG8ap4hnRNnaSmD2jV9EHuni"}],"group":"cf-nel","max_age":604800}
+NEL: {"success_fraction":0,"report_to":"cf-nel","max_age":604800}
+Server: cloudflare
+CF-RAY: 91eb07f58832bb5a-CDG
+alt-svc: h3=":443"; ma=86400
+server-timing: cfL4;desc="?proto=TCP&rtt=16301&min_rtt=16301&rtt_var=8150&sent=1&recv=3&lost=0&retrans=0&sent_bytes=0&recv_bytes=129&delivery_rate=0&cwnd=176&unsent_bytes=0&cid=0000000000000000&ts=0&x=0"
+
+[Mar 11, 2025 - 13:24:50 (CET)] exegol-cyberini /workspace # curl -I https://ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com
+
+curl: (35) OpenSSL/3.0.14: error:0A000410:SSL routines::sslv3 alert handshake failure
+
+
+
+
+
+[Mar 11, 2025 - 13:20:58 (CET)] exegol-cyberini /workspace # curl -I http://ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com
+HTTP/1.1 200 OK
+Date: Tue, 11 Mar 2025 12:24:50 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: keep-alive
+cf-cache-status: DYNAMIC
+Report-To: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=%2BKXjFy37ckf7giWx5STrO03YyIBnQZxZwWMTftwh8X3R7%2BKT9oAAPI6Bi7FxpkiapmiXLZISufMU3L%2BbuvsbzmuHAnnMCYQOzUZw3ERxkU7RKJ0zBdBX%2FkshF2FOkPvUZUMgWqDrgcNIAbljgLVrdPXKc0bSVGPBJM9Xmi9dArE5TG8ap4hnRNnaSmD2jV9EHuni"}],"group":"cf-nel","max_age":604800}
+NEL: {"success_fraction":0,"report_to":"cf-nel","max_age":604800}
+Server: cloudflare
+CF-RAY: 91eb07f58832bb5a-CDG
+alt-svc: h3=":443"; ma=86400
+server-timing: cfL4;desc="?proto=TCP&rtt=16301&min_rtt=16301&rtt_var=8150&sent=1&recv=3&lost=0&retrans=0&sent_bytes=0&recv_bytes=129&delivery_rate=0&cwnd=176&unsent_bytes=0&cid=0000000000000000&ts=0&x=0"
+
+[Mar 11, 2025 - 13:24:50 (CET)] exegol-cyberini /workspace # curl -I https://ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com
+
+curl: (35) OpenSSL/3.0.14: error:0A000410:SSL routines::sslv3 alert handshake failure
+
+
+[Mar 11, 2025 - 13:24:55 (CET)] exegol-cyberini /workspace # whatweb http://ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com
+http://ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com/ [200 OK] Country[RESERVED][ZZ], HTML5, HTTPServer[cloudflare], IP[172.67.164.21], Title[MieuxQueGoogle.com | Recherche], UncommonHeaders[cf-cache-status,report-to,nel,cf-ray,alt-svc,server-timing]
+
+
+[Mar 11, 2025 - 13:25:28 (CET)] exegol-cyberini /workspace # gobuster dir -u http://ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com -w fzf-wordlists -x php,html,txt,json
+
+===============================================================
+Gobuster v3.6
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /opt/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.6
+[+] Extensions:              php,html,txt,json
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/.php                 (Status: 403) [Size: 331]
+/index.php            (Status: 200) [Size: 1533]
+/.html                (Status: 403) [Size: 331]
+/search.php           (Status: 200) [Size: 1319]
+
+[Mar 11, 2025 - 13:27:34 (CET)] exegol-cyberini /workspace # gobuster dir -u http://ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com:8080 -w fzf-wordlists  -x php,html,txt,aspx,js
+
+===============================================================
+Gobuster v3.6
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com:8080
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /opt/seclists/Discovery/Web-Content/directory-list-1.0.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.6
+[+] Extensions:              txt,aspx,js,php,html
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+
+Error: the server returns a status code that matches the provided options for non existing urls. http://ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com:8080/1e1ac1f3-a5ed-4dc5-a908-5f785ac47756 => 521 (Length: 15). To continue please exclude the status code or the length
+
+
+[Mar 11, 2025 - 13:21:43 (CET)] exegol-cyberini /workspace # nikto -h http://ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com
+- Nikto v2.1.5
+---------------------------------------------------------------------------
++ Target IP:          172.67.164.21
++ Target Hostname:    ip10-36-165-5-cv82iimslcb111osqelg-8080.direct.labs.cyberini.com
++ Target Port:        80
++ Start Time:         2025-03-11 13:26:41 (GMT1)
+---------------------------------------------------------------------------
++ Server: cloudflare
++ Uncommon header 'nel' found, with contents: {"success_fraction":0,"report_to":"cf-nel","max_age":604800}
++ Uncommon header 'server-timing' found, with contents: cfL4;desc="?proto=TCP&rtt=39024&min_rtt=14730&rtt_var=23605&sent=3&recv=7&lost=0&retrans=0&sent_bytes=2081&recv_bytes=561&delivery_rate=98302&cwnd=226&unsent_bytes=0&cid=0000000000000000&ts=0&x=0"
++ Uncommon header 'alt-svc' found, with contents: h3=":443"; ma=86400
++ Uncommon header 'cf-ray' found, with contents: 91eb0aaa5bd40226-CDG
++ Uncommon header 'referrer-policy' found, with contents: same-origin
++ Uncommon header 'x-frame-options' found, with contents: SAMEORIGIN
++ Uncommon header 'report-to' found, with contents: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=rcAbxPMBmB68BgHrpxCQR6wtRRMwMwmT4al7TOIk9pH9yt%2FjWgXlq3wlleqq8we50a0MTbV2te9etQDHvlqM1ZQQg5oeVr59h2ooEitEJ3jtVtauU5IGhy%2B6nze%2FBKbMLu0MhJtTiXq2GAGJvtt2nZqPxybFNYVpt5vxCd8oi69DXR53Cs2SJrlIniAaL9TfBfAj"}],"group":"cf-nel","max_age":604800}
++ No CGI Directories found (use '-C all' to force check all possible dirs)
++ 6544 items checked: 0 error(s) and 7 item(s) reported on remote host
++ End Time:           2025-03-11 13:29:17 (GMT1) (156 seconds)
+---------------------------------------------------------------------------
++ 1 host(s) tested
+
+
+Analyse des vulnérabilités (identifier les failles potentielles)
+
+
+
+Exploitation des vulnérabilités (exploiter les failles pour obtenir un accès)
+
+
+
+Élévation de privilèges et post-exploitation (si applicable)
+
+
+
+Rédaction du rapport (documenter les découvertes et les recommandations)
+

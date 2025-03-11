@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rapport de Test d'Intrusion Professionnel</title>
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #e74c3c;
+      --accent-color: #3498db;
+      --text-color: #333;
+      --light-bg: #f5f7fa;
+      --border-color: #ddd;
+      --critical: #e74c3c;
+      --high: #f39c12;
+      --medium: #f1c40f;
+      --low: #3498db;
+      --info: #2ecc71;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--light-bg);
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    
+    header {
+      background: var(--primary-color);
+      color: white;
+      padding: 30px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .logo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      height: 60px;
+      width: 200px;
+      background-color: white;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    .classification {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 5px 15px;
+      background: var(--secondary-color);
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+    
+    nav {
+      background: var(--primary-color);
+      padding: 10px 30px;
+      border-bottom: 3px solid var(--secondary-color);
+    }
+    
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    
+    nav ul li {
+      margin-right: 20px;
+    }
+    
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      padding: 5px 0;
+      font-size: 0.9rem;
+      position: relative;
+    }
+    
+    nav ul li a:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--secondary-color);
+      transition: width 0.3s;
+    }
+    
+    nav ul li a:hover:after {
+      width: 100%;
+    }
+    
+    .content {
+      padding: 30px;
+    }
+    
+    h1, h2, h3, h4 {
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+    
+    h1 {
+      font-size: 2.2rem;
+      border-bottom: 2px solid var(--secondary-color);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 40px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    h3 {
+      font-size: 1.5rem;
+      margin-top: 30px;
+    }
+    
+    h4 {
+      font-size: 1.2rem;
+      margin-top: 20px;
+    }
+    
+    p, ul, ol {
+      margin-bottom: 15px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    
+    table, th, td {
+      border: 1px solid var(--border-color);
+    }
+    
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+    }
+    
+    th {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    tr:nth-child(even) {
+      background-color: var(--light-bg);
+    }
+    
+    .card {
+      background: white;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .vuln-card {
+      border-left: 5px solid;
+      margin-bottom: 30px;
+    }
+    
+    .vuln-critical {
+      border-color: var(--critical);
+    }
+    
+    .vuln-high {
+      border-color: var(--high);
+    }
+    
+    .vuln-medium {
+      border-color: var(--medium);
+    }
+    
+    .vuln-low {
+      border-color: var(--low);
+    }
+    
+    .vuln-info {
+      border-color: var(--info);
+    }
+    
+    .vuln-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .vuln-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 0;
+    }
+    
+    .badge {
+      padding: 5px 10px;
+      border-radius: 15px;
+      color: white;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    
+    .badge-critical {
+      background-color: var(--critical);
+    }
+    
+    .badge-high {
+      background-color: var(--high);
+    }
+    
+    .badge-medium {
+      background-color: var(--medium);
+    }
+    
+    .badge-low {
+      background-color: var(--low);
+    }
+    
+    .badge-info {
+      background-color: var(--info);
+    }
+    
+    .vuln-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+    }
+    
+    .vuln-meta span {
+      background: var(--light-bg);
+      padding: 5px 10px;
+      border-radius: 3px;
+    }
+    
+    .code-block {
+      background: #282c34;
+      color: #abb2bf;
+      padding: 15px;
+      border-radius: 5px;
+      font-family: 'Courier New', Courier, monospace;
+      overflow-x: auto;
+      margin: 15px 0;
+    }
+    
+    .graph-container {
+      width: 100%;
+      height: 300px;
+      margin: 20px 0;
+      background: white;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-style: italic;
+      color: #666;
+    }
+    
+    .flex-container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .flex-item {
+      flex: 1;
+      min-width: 250px;
+    }
+    
+    .stat-card {
+      text-align: center;
+      padding: 20px;
+      background: var(--light-bg);
+      border-radius: 5px;
+    }
+    
+    .stat-number {
+      font-size: 3rem;
+      font-weight: bold;
+      display: block;
+      color: var(--accent-color);
+    }
+    
+    .stat-label {
+      font-size: 1rem;
+      color: var(--primary-color);
+    }
+    
+    .screenshot {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 3px;
+      margin: 15px 0;
+    }
+    
+    .recommendation {
+      background-color: #e8f4f8;
+      border-left: 4px solid var(--accent-color);
+      padding: 15px;
+      margin: 20px 0;
+    }
+    
+    .recommendation h4 {
+      color: var(--accent-color);
+      margin-top: 0;
+    }
+    
+    footer {
+      background: var(--primary-color);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 50px;
+    }
+    
+    /* Styles d'impression pour une conversion PDF propre */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      
+      .container {
+        box-shadow: none;
+        margin: 0;
+      }
+      
+      .page-break {
+        page-break-after: always;
+      }
+      
+      nav {
+        display: none;
+      }
+      
+      header {
+        background: white;
+        color: black;
+        padding: 20px;
+      }
+      
+      .logo, .classification {
+        position: static;
+        display: inline-block;
+        margin: 10px;
+      }
+      
+      .graph-container {
+        break-inside: avoid;
+      }
+      
+      .badge-critical, .badge-high, .badge-medium, .badge-low, .badge-info {
+        border: 1px solid black;
+        color: black;
+        background: none;
+      }
+      
+      footer {
+        background: white;
+        color: black;
+        border-top: 1px solid black;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- En-tête du rapport -->
+    <header>
+      <div class="logo">LOGO</div>
+      <h1>Rapport de Test d'Intrusion Professionnel</h1>
+      <p>Pour [Nom de l'Entreprise Cliente]</p>
+      <div class="classification">CONFIDENTIEL</div>
+    </header>
+    
+    <!-- Menu de navigation -->
+    <nav>
+      <ul>
+        <li><a href="#info-document">Informations</a></li>
+        <li><a href="#preambule-legal">Légal</a></li>
+        <li><a href="#contexte">Contexte</a></li>
+        <li><a href="#methodologie">Méthodologie</a></li>
+        <li><a href="#techniques">Techniques</a></li>
+        <li><a href="#resultats">Résultats</a></li>
+        <li><a href="#risques">Risques</a></li>
+        <li><a href="#recommandations">Recommandations</a></li>
+        <li><a href="#conclusion">Conclusion</a></li>
+        <li><a href="#annexes">Annexes</a></li>
+      </ul>
+    </nav>
+    
+    <!-- Contenu principal -->
+    <div class="content">
+      <!-- Informations sur le Document -->
+      <section id="info-document">
+        <div class="card">
+          <h3>Informations sur le Document</h3>
+          <table>
+            <tr>
+              <th style="width: 30%;">Titre</th>
+              <td>Rapport de Test d'Intrusion - [Nom du client]</td>
+            </tr>
+            <tr>
+              <th>Date</th>
+              <td>[Date du rapport]</td>
+            </tr>
+            <tr>
+              <th>Version</th>
+              <td>[Version du document]</td>
+            </tr>
+            <tr>
+              <th>Classification</th>
+              <td>CONFIDENTIEL</td>
+            </tr>
+            <tr>
+              <th>Auteurs</th>
+              <td>[Noms des testeurs]</td>
+            </tr>
+            <tr>
+              <th>Destinataires</th>
+              <td>[Noms des destinataires]</td>
+            </tr>
+          </table>
+        </div>
+      </section>
+      
+      <div class="page-break"></div>
+      
+      <!-- Préambule Légal et Conformité -->
+      <section id="preambule-legal">
+        <h2>Préambule Légal et Conformité</h2>
+        <p>
+          Ce rapport a été réalisé dans le cadre d’un mandat d’audit de sécurité dûment autorisé par [Nom de l'Entreprise]. Il est destiné à un usage strictement interne et confidentiel. Toute divulgation non autorisée est interdite.
+        </p>
+        <p>
+          Le test d’intrusion a été mené conformément aux lois en vigueur et aux normes de l’industrie. Les informations présentées dans ce rapport sont fournies à titre indicatif et ne sauraient constituer une garantie absolue de sécurité.
+        </p>
+        <p>
+          <strong>Clauses légales :</strong> Accord de confidentialité signé, limites d’intervention définies contractuellement, et exclusion de toute responsabilité en cas d’utilisation non autorisée des informations.
+        </p>
+      </section>
+      
+      <div class="page-break"></div>
+      
+      <!-- Contexte et Objectifs -->
+      <section id="contexte">
+        <h2>Contexte et Objectifs</h2>
+        <h3>Contexte de la Mission</h3>
+        <p>
+          [Description du contexte commercial ou organisationnel, historique de la sécurité, et raisons ayant motivé le test d’intrusion.]
+        </p>
+        <h3>Objectifs du Test</h3>
+        <ul>
+          <li>Identifier et exploiter les vulnérabilités critiques</li>
+          <li>Évaluer l’impact potentiel sur la confidentialité, l’intégrité et la disponibilité</li>
+          <li>Fournir des recommandations techniques et légales pour la remédiation</li>
+        </ul>
+        <h3>Limitations et Exclusions</h3>
+        <p>
+          [Description des limites du périmètre, des techniques non exploitées, et des exclusions convenues dans le cadre du mandat.]
+        </p>
+      </section>
+      
+      <div class="page-break"></div>
+      
+      <!-- Méthodologie et Techniques Utilisées -->
+      <section id="methodologie">
+        <h2>Méthodologie et Techniques Utilisées</h2>
+        <p>
+          La mission s’est déroulée en plusieurs phases : reconnaissance, identification des vulnérabilités, exploitation, et post-exploitation. Chaque phase a été menée avec des outils automatisés et une vérification manuelle afin de garantir la fiabilité des résultats.
+        </p>
+        <table>
+          <tr>
+            <th>Niveau de Criticité</th>
+            <th>Score CVSS</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>Critique</td>
+            <td>9-10</td>
+            <td>[Impact majeur et exploitation à distance]</td>
+          </tr>
+          <tr>
+            <td>Haut</td>
+            <td>7-8.9</td>
+            <td>[Impact important avec accès partiel]</td>
+          </tr>
+          <tr>
+            <td>Moyen</td>
+            <td>4-6.9</td>
+            <td>[Impact limité, nécessite une interaction]</td>
+          </tr>
+          <tr>
+            <td>Bas</td>
+            <td>0.1-3.9</td>
+            <td>[Impact faible, sans conséquence majeure]</td>
+          </tr>
+        </table>
+        <h3>Phases du Test</h3>
+        <ol>
+          <li><strong>Reconnaissance :</strong> Collecte d'informations publiques, identification des infrastructures et des points d'entrée potentiels.</li>
+          <li><strong>Scan et Enumeration :</strong> Utilisation d’outils (Nmap, OpenVAS, etc.) pour détecter les ports ouverts, services actifs et versions logicielles.</li>
+          <li><strong>Exploitation :</strong> Tests d’injections (SQL, XSS, etc.), exécution de commandes à distance (RCE) et élévation de privilèges afin de valider les vulnérabilités détectées.</li>
+          <li><strong>Post-exploitation :</strong> Analyse de l'impact, collecte des preuves, et recommandations pour limiter l’exposition en cas de compromission.</li>
+        </ol>
+      </section>
+      
+      <div class="page-break"></div>
+      
+      <!-- Description des Techniques d'Attaque -->
+      <section id="techniques">
+        <h2>Description des Techniques d'Attaque</h2>
+        <h3>Reconnaissance et Footprinting</h3>
+        <p>
+          Collecte d’informations via WHOIS, DNS lookup, et recherche de données publiques. Objectif : identifier l’architecture réseau, les sous-domaines et les services exposés.
+        </p>
+        <h3>Scan et Enumeration</h3>
+        <p>
+          Utilisation d’outils comme Nmap pour identifier les ports ouverts et services actifs, et OpenVAS pour détecter des vulnérabilités spécifiques aux versions logicielles.
+        </p>
+        <h3>Injection SQL</h3>
+        <p>
+          Technique permettant d’insérer des requêtes malveillantes dans des formulaires ou URL non sécurisés, afin d’accéder à la base de données et extraire ou modifier des informations sensibles.
+        </p>
+        <h3>Cross-Site Scripting (XSS)</h3>
+        <p>
+          Injection de scripts dans des pages web vulnérables pour détourner des sessions ou voler des cookies, pouvant entraîner un détournement d’identité et la compromission des utilisateurs.
+        </p>
+        <h3>Exécution de Commandes à Distance (RCE)</h3>
+        <p>
+          Exploitation de failles dans l’application pour exécuter des commandes sur le serveur cible. Cette technique, très critique, peut aboutir à un contrôle total du système.
+        </p>
+        <h3>Élévation de Privilèges</h3>
+        <p>
+          Identification de vulnérabilités permettant d’augmenter les droits d’un utilisateur afin d’obtenir des accès administratifs ou critiques sur le système.
+        </p>
+        <h3>Analyse de la Configuration</h3>
+        <p>
+          Examen des configurations système et des politiques de sécurité afin de détecter des erreurs de paramétrage pouvant faciliter des attaques ultérieures.
+        </p>
+      </section>
+      
+      <div class="page-break"></div>
+      
+      <!-- Résultats et Vulnérabilités -->
+      <section id="resultats">
+        <h2>Résultats et Vulnérabilités</h2>
+        <div class="vuln-card vuln-critical card">
+          <div class="vuln-header">
+            <h3 class="vuln-title">CWE-78 : Exécution de Commande OS</h3>
+            <span class="badge badge-critical">Critique</span>
+          </div>
+          <p>
+            [Description détaillée de la vulnérabilité, impact, vecteurs d'attaque et contexte technique.]
+          </p>
+          <div class="vuln-meta">
+            <span>Score CVSS : 9.5</span>
+            <span>Actif concerné : [IP:Port]</span>
+          </div>
+          <div class="code-block">
+            [Exemple de preuve technique ou code démonstratif]
+          </div>
+          <p><strong>Correction :</strong> [Détails sur la mise à jour, le patch ou la configuration à appliquer]</p>
+        </div>
+        <!-- Vous pouvez ajouter d'autres vulnérabilités en répliquant la structure ci-dessus -->
+      </section>
+      
+      <div class="page-break"></div>
+      
+      <!-- Analyse des Risques -->
+      <section id="risques">
+        <h2>Analyse des Risques et Impact</h2>
+        <p>
+          [Description de l'analyse des risques réalisée, incluant l'impact potentiel sur la confidentialité, l'intégrité et la disponibilité, ainsi que la probabilité d'exploitation.]
+        </p>
+        <div class="graph-container">
+          [Graphique illustrant la répartition des risques]
+        </div>
+      </section>
+      
+      <div class="page-break"></div>
+      
+      <!-- Recommandations -->
+      <section id="recommandations">
+        <h2>Recommandations</h2>
+        <p>
+          [Synthèse des recommandations techniques et légales pour corriger les vulnérabilités identifiées et améliorer la posture de sécurité globale.]
+        </p>
+        <ol>
+          <li>[Recommandation 1 : Mesures techniques et organisationnelles]</li>
+          <li>[Recommandation 2 : Mise en conformité et renforcement des politiques de sécurité]</li>
+          <li>[Recommandation 3 : Plan d'action pour la remédiation et suivi]</li>
+        </ol>
+      </section>
+      
+      <div class="page-break"></div>
+      
+      <!-- Conclusion -->
+      <section id="conclusion">
+        <h2>Conclusion</h2>
+        <p>
+          [Conclusion générale résumant les points critiques, l'impact global et les mesures à prendre pour sécuriser l'environnement.]
+        </p>
+      </section>
+      
+      <div class="page-break"></div>
+      
+      <!-- Annexes -->
+      <section id="annexes">
+        <h2>Annexes</h2>
+        <p>
+          [Ajouter ici toutes les informations complémentaires : logs, captures d'écran, références légales, documents de preuve et liens vers les ressources utilisées.]
+        </p>
+      </section>
+    </div>
+    
+    <!-- Pied de page -->
+    <footer>
+      <p>© [Année] - [Nom de votre entreprise]. Tous droits réservés.</p>
+    </footer>
+  </div>
+</body>
+</html>
+

