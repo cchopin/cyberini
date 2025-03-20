@@ -136,7 +136,7 @@ wpscan --url http://target --enumerate all  # Énumération complète
 smbclient -L //192.168.1.100               # Liste des partages
 smbclient \\\\192.168.1.100\\share -U user # Connexion à un partage
 smbmap -H 192.168.1.100                    # Permissions des partages
-smbmap -H 192.168.1.100 -u anonymous -p "" # Connexion anonyme
+smbmap -H 192.168.1.100 -U anonymous -P "" # Connexion anonyme
 
 # Enum4linux
 enum4linux -a 192.168.1.100                # Énumération complète
