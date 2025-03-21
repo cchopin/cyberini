@@ -8,13 +8,9 @@
 5. [Reporting](#reporting)
 6. [Standards & Méthodologies](#standards--méthodologies)
 7. [Outils Spécialisés](#outils-spécialisés)
-   - [Exploitation Samba](#exploitation-samba-détaillée)
-   - [Exploitation FTP](#exploitation-ftp-détaillée)
-   - [Exploitation MySQL](#exploitation-mysql-détaillée)
-   - [Exploitation SMTP/POP3/IMAP](#exploitation-smtppop3imap-détaillée)
-   - [Exploitation SSH](#exploitation-ssh-détaillée)
 8. [Payloads & Reverse Shells](#payloads--reverse-shells)
 9. [Wordlists, Exegol & Ressources](#wordlists--exegol)
+10. [Classification des Vulnérabilités](#classification-des-vulnérabilités)
 
 ---
 
@@ -1112,3 +1108,112 @@ https://github.com/f0rb1dd3n/Reptile (rootkit)
 [ ] LFI/RFI
 [ ] CSRF
 ```
+
+## 🛠 CLASSIFICATION DES VULNÉRABILITÉS
+
+### 📖 Introduction
+Le système **CVSS v4.0** permet de mesurer la gravité d’une vulnérabilité en standardisant le scoring sur plusieurs critères.  
+👉 **Calculateur officiel : [https://www.first.org/cvss/calculator/4-0](https://www.first.org/cvss/calculator/4-0)**
+
+Un score **de 0 à 10** sera obtenu selon l’exploitation, l’impact et le contexte.
+
+---
+
+### 🔎 MÉTRIQUES CVSS 4.0 - Comment remplir chaque champ ?
+
+#### 1️⃣ **AV - Attack Vector (Vecteur d'attaque)**
+- **N (Network)** : Exploitable à distance sans accès préalable (ex: service HTTP).
+- **A (Adjacent)** : Accessible uniquement sur le même réseau (ex: VLAN).
+- **L (Local)** : Nécessite un accès local sur la machine.
+- **P (Physical)** : Nécessite un accès physique à la machine.
+
+➡️ **Conseil** : Si c’est faisable par internet ou LAN, choisis **N**. Si accès physique requis (**USB, BIOS**), choisis **P**.
+
+---
+
+#### 2️⃣ **AC - Attack Complexity (Complexité de l'attaque)**
+- **L (Low)** : Aucun facteur externe, réussite assurée si le vecteur est accessible.
+- **H (High)** : Nécessite des conditions spécifiques (race condition, timing, complexité technique rare).
+
+➡️ **Conseil** : Si l’attaque réussit systématiquement -> **Low**. Si elle dépend de la chance ou d’une condition difficile -> **High**.
+
+---
+
+#### 3️⃣ **AT - Attack Requirements (Nouveauté v4.0)**
+- **N (None)** : Aucun besoin externe.
+- **P (Present)** : Dépend de l'état ou de la configuration de la cible (ex: un service optionnel activé).
+
+➡️ **Conseil** : Si exploitable partout -> **None**. Si besoin d’un module activé ou d’un certain contexte -> **Present**.
+
+---
+
+#### 4️⃣ **PR - Privileges Required**
+- **N (None)** : Exploitable sans authentification.
+- **L (Low)** : Nécessite un compte basique (user).
+- **H (High)** : Nécessite des droits admin/root.
+
+➡️ **Conseil** : Si pas besoin de compte -> **None**. Si admin requis -> **High**.
+
+---
+
+#### 5️⃣ **UI - User Interaction**
+- **N (None)** : Aucune interaction utilisateur requise.
+- **P (Passive)** : L’utilisateur est ciblé sans interaction (ex: navigation automatique).
+- **A (Active)** : Nécessite une action de l’utilisateur (cliquer, ouvrir un fichier).
+
+➡️ **Conseil** : Exploitation en aveugle -> **None**. Si l’utilisateur doit ouvrir un fichier -> **Active**.
+
+---
+
+#### 6️⃣ **VC / VI / VA - Impact sur la Confidentialité, l’Intégrité et la Disponibilité**
+Chaque impact peut être :
+- **H (High)** : Données sensibles exposées, modification totale, système inutilisable.
+- **L (Low)** : Impact partiel ou contournable.
+- **N (None)** : Aucun impact.
+
+➡️ **Conseil** :
+- Dump complet de BDD -> **VC:H**
+- Modification de fichiers -> **VI:H**
+- Crash ou déni de service complet -> **VA:H**
+
+---
+
+#### 7️⃣ **SC / SI / SA - Impacts secondaires (Optional - Contextuel)**
+- Scope étendu ou changement de périmètre sur **Confidentiality (SC)**, **Integrity (SI)**, **Availability (SA)**.
+
+⚠️ **Remplir si la vulnérabilité propage son impact à d’autres systèmes.**
+
+---
+
+### 📈 EXEMPLE COMPLET DE VECTEUR CVSS 4.0
+
+```
+CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N
+```
+
+- Exploitable depuis internet (AV:N)
+- Aucune complexité (AC:L)
+- Pas de pré-requis système (AT:N)
+- Pas d'authentification nécessaire (PR:N)
+- Pas d’interaction utilisateur (UI:N)
+- Impact élevé sur Confidentialité, Intégrité et Disponibilité.
+
+---
+
+### 🟠 CONSEIL POUR LE RAPPORT
+- **Explique tes choix de score** dans la partie preuve.
+- Ajoute systématiquement le vecteur **CVSS** pour **chaque vulnérabilité**.
+- Utilise le **calculateur officiel** pour valider le score final :
+👉 **https://www.first.org/cvss/calculator/4-0**
+
+---
+
+### ✅ RÉSUMÉ DES NIVEAUX DE SCORE
+| Score      | Niveau    | Interprétation                                      |
+|----------- |----------|-----------------------------------------------------|
+| 9.0 - 10   | Critique | Exploitable facilement, impact maximal              |
+| 7.0 - 8.9  | Élevé    | Exploitable avec un impact fort                     |
+| 4.0 - 6.9  | Moyen    | Exploitation conditionnelle ou impact modéré        |
+| 0.1 - 3.9  | Faible   | Difficile à exploiter ou impact négligeable         |
+| 0          | Aucune   | Informatif, sans impact sur la sécurité             |
+
