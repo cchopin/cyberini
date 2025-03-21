@@ -1200,8 +1200,8 @@ CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N
 
 ---
 
-### 🟠 CONSEIL POUR LE RAPPORT
-- **Explique tes choix de score** dans la partie preuve.
+### 🟠  POUR LE RAPPORT
+- **Explique les choix de score** dans la partie preuve.
 - Ajoute systématiquement le vecteur **CVSS** pour **chaque vulnérabilité**.
 - Utilise le **calculateur officiel** pour valider le score final :
 👉 **https://www.first.org/cvss/calculator/4-0**
