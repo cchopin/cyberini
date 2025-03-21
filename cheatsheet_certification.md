@@ -1074,7 +1074,7 @@ exegol-resources                           # Méta-package avec outils additionn
 /usr/share/wordlists/SecLists/Usernames/Names/names.txt
 ```
 
-### 🔍 RESSOURCES ADDITIONNELLES
+### RESSOURCES ADDITIONNELLES
 ```
 # Bases de données vulnérabilités
 https://www.exploit-db.com/
@@ -1088,7 +1088,7 @@ https://github.com/rebootuser/LinEnum
 https://github.com/f0rb1dd3n/Reptile (rootkit)
 ```
 
-### 🗺 CHECKLISTS
+### CHECKLISTS
 ```
 # Windows Post-Exploitation
 [ ] whoami /all
@@ -1109,7 +1109,7 @@ https://github.com/f0rb1dd3n/Reptile (rootkit)
 [ ] CSRF
 ```
 
-## 🛠 CLASSIFICATION DES VULNÉRABILITÉS
+## CLASSIFICATION DES VULNÉRABILITÉS
 
 ### 📖 Introduction
 Le système **CVSS v4.0** permet de mesurer la gravité d’une vulnérabilité en standardisant le scoring sur plusieurs critères.  
