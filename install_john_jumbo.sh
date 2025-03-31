@@ -40,17 +40,19 @@ cd "$JOHN_DIR/src"
 ./configure
 make -sj"$(nproc)"
 
-echo "[*] Ajout des alias dans ~/.bashrc (si absents)..."
-if ! grep -q 'alias john=' ~/.bashrc; then
-    echo "alias john='$JOHN_DIR/run/john'" >> ~/.bashrc
-    echo "alias john2john='ls $JOHN_DIR/run/*2john.py'" >> ~/.bashrc
-    echo "[*] Aliases ajoutés."
+ZSHRC="$HOME/.zshrc"
+
+echo "[*] Ajout des alias dans $ZSHRC (si absents)..."
+if ! grep -q 'alias john=' "$ZSHRC"; then
+    echo "alias john='$JOHN_DIR/run/john'" >> "$ZSHRC"
+    echo "alias john2john='ls $JOHN_DIR/run/*2john.py'" >> "$ZSHRC"
+    echo "[*] Aliases ajoutés à $ZSHRC."
 else
-    echo "[✓] Les alias semblent déjà présents."
+    echo "[✓] Les alias semblent déjà présents dans $ZSHRC."
 fi
 
-echo "[*] Rechargement de la configuration du shell..."
-source ~/.bashrc
+echo "[*] Rechargement de Zsh..."
+source "$ZSHRC"
 
 echo -e "\n[✔] Installation de John the Ripper Jumbo terminée !"
 echo "→ Tu peux utiliser la commande 'john' depuis n'importe où 🧠🔓"
